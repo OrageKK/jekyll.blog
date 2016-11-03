@@ -17,7 +17,10 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="{{ site.baseurl }}/">Home</a>
+                        <!--<a href="{{ site.baseurl }}/">Home</a>-- 以前的代码-->
+                        <div class="list-group">
+                        <a class="list-group-item" href="{{ site.baseurl }}/"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; HOME</a>
+                        </div>
                     </li>
                     {% for page in site.pages %}{% if page.title %}
                     <li>
