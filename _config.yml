@@ -3,8 +3,8 @@ title: Oragekk Blog
 SEOTitle: 黄坤的博客 | Oragekk Blog
 header-img: img/home-bg.jpg
 email: oragekk@163.com
-description: "关于前端与设计、黑客与画家 | 黄坤，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Hux黄玄 的个人博客，与你一起发现更大的世界。"
-keyword: "黄坤, Oragekk, 鬼栈, Oragekk, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, 产品, 肖玉, Lynn, 肖玉的男朋友"
+description: "关于开发与设计、黑客与画家 | 黄坤，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Oragekk黄坤 的个人博客，与你一起发现更大的世界。"
+keyword: "黄坤, Oragekk, 鬼栈, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, iOS, Lynn"
 url: "https://oragekk.github.io"              # your host, for absolute URL
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
 
@@ -51,7 +51,7 @@ kramdown:
 #disqus_username: _your_disqus_short_name_
 
 # Duoshuo settings
-duoshuo_username: Oragekkblog
+duoshuo_username: Oragekk
 # Share component is depend on Comment so we can NOT use share only.
 duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
@@ -64,7 +64,7 @@ duoshuo_share: true                     # set to false if you want to use Commen
 
 # Google Analytics
 ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
-ga_domain: oragekk.github.io
+ga_domain: auto
 
 
 
@@ -90,6 +90,9 @@ service-worker: true
 # Friends
 friends: [
     {
+        title: "Hux Blog",
+        href: "http://huangxuan.me"
+    },{
         title: "Su",
         href: "http://su.gallery/"
     },{
