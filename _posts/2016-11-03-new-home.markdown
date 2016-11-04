@@ -68,6 +68,7 @@ Oragekk 的 Blog 就这么开通了。
 >第二天考虑中文字体的渲染，fork 了 [Type is Beautiful](http://www.typeisbeautiful.com/) 的 `font` CSS，调整了字号，适配了 Win 的渣渲染，中英文混排效果好多了。
 
 ---
+
 ## 后记
 
 回顾这个博客的诞生，纯粹是出于个人兴趣。为了有个块自留地，可以无聊了写写，不开心了写写。
