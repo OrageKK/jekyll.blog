@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Welcome to Oragekk Blog"
-subtitle:   " \"Hello World, Hello Blog\""
+title:      "Programmers in Jianshu"
+subtitle:   " \"程序员在简书|柠檬柚子\""
 date:       2016-11-03 17:55:28
 author:     "Oragekk"
 header-img: "img/post-bg-2016-11-3.jpg"
