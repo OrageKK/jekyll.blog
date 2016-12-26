@@ -43,63 +43,55 @@ tags:
 
 
 -------------------
+
 ###优化步骤
 1. 新建一个UIImage分类
 2. 定义方法
-        - (void)oa_cornerImageWithSize:(CGSize)size fillColor: (UIColor *)fillColor 
+        
+        - (void)oa_cornerImageWithSize:(CGSize)size fillColor: (UIColor *)fillColor
+        
         completion:(void (^)(UIImage *))completion {
-    
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        
-            NSTimeInterval start = CACurrentMediaTime();
-        
-            // 1. 利用绘图，建立上下文
-            UIGraphicsBeginImageContextWithOptions(size, YES, 0);
-        
-            CGRect rect = CGRectMake(0, 0, size.width, size.height);
-        
-            // 2. 设置填充颜色
-            [fillColor setFill];
-            UIRectFill(rect);
-        
-            // 3. 利用 贝赛尔路径 `裁切 效果
-            UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:rect];
-        
-            [path addClip];
-        
-            // 4. 绘制图像
-            [self drawInRect:rect];
-        
-            // 5. 取得结果
-            UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
-        
-            // 6. 关闭上下文
-            UIGraphicsEndImageContext();
-        
-            NSLog(@"%f", CACurrentMediaTime() - start);
-        
-            // 7. 完成回调
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (completion != nil) {
-                completion(result);
-              }
-            });
-          });
+        
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSTimeInterval start = CACurrentMediaTime();
+        
+        	// 1. 利用绘图，建立上下文
+        
+        	UIGraphicsBeginImageContextWithOptions(size, YES, 0);
+        	CGRect rect = CGRectMake(0, 0, size.width, size.height);
+        	// 2. 设置填充颜色
+        	[fillColor setFill];
+        	UIRectFill(rect);
+        	// 3. 利用 贝赛尔路径 `裁切 效果
+        	UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:rect];
+        	[path addClip];
+        	// 4. 绘制图像
+        	[self drawInRect:rect];
+        	// 5. 取得结果
+        	UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+        	// 6. 关闭上下文
+        	UIGraphicsEndImageContext();
+        	NSLog(@"%f", CACurrentMediaTime() - start);
+        	// 7. 完成回调
+        	dispatch_async(dispatch_get_main_queue(), ^{
+        		if (completion != nil) {
+        			completion(result);
+        			}
+        		});
+        	});
         }
 
 3.控制器中代码如下
 
 
       UIImageView *iv = [[UIImageView alloc]  initWithFrame:CGRectMake(0, 0, 200, 200)];
-      iv.center = self.view.center;
-    
-      [self.view addSubview:iv];
-    
-      // 设置图像
-      UIImage *image = [UIImage imageNamed:@"avatar.jpg"];
-      [image oa_cornerImageWithSize:iv.bounds.size fillColor:[UIColor whiteColor] completion:^(UIImage *image) {
-          iv.image = image;
-    }];
+      iv.center = self.view.center;
+      [self.view addSubview:iv];
+      // 设置图像
+      UIImage *image = [UIImage imageNamed:@"avatar.jpg"];
+      [image oa_cornerImageWithSize:iv.bounds.size fillColor:[UIColor whiteColor] completion:^(UIImage *image) {
+      iv.image = image;
+      }];
 4.模拟器``Color Blended Layers``  和``Color Misaligned Images``检测结果如下图
 
 
