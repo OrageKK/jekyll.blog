@@ -17,21 +17,25 @@ tags:
 > 本文介绍内容主要是tableView的性能优化之不使用cornerRadius设置图片圆角
 
 有人问我为什么tableView滑动不流畅，甚至闪退，其实和cell中的圆角头像使用了cornerRadius有关
-###优化点
+
+### 优化点
+
 - 行高一定要缓存
 - 不要动态创建子视图
- - 所有子视图都要预先创建
- - 如果不需要显示可以设置hidden
+- 所有子视图都要预先创建
+- 如果不需要显示可以设置hidden
 - 所有的子视图都应该添加到 ``contentView``上
 - 所有的子视图都必须要指定颜色
 - 不要动态的修改cornerRadius之类的图层渲染相关属性
 - 使用颜色不要带透明度，此处我们可以使用模拟器中的混合模式去检测，如果如下图所示出现红色，除了UILabel之外，其他的我们都应该尽量去处理
 - cell栅格化
-      cell.layer.shouldRasterize = YES;
-      cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
+
+      ``cell.layer.shouldRasterize = YES;``
+      
+      ``cell.layer.rasterizationScale = [UIScreen mainScreen].scale;``
 - 异步绘制
-      // 异步绘制
-      layer.drawsAsynchronously = YES;
+      ``// 异步绘制
+      layer.drawsAsynchronously = YES;``
 
 ![Color Blended Layers模式下](http://upload-images.jianshu.io/upload_images/2076247-b9d269a0daab047f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -44,7 +48,7 @@ tags:
 
 -------------------
 
-###优化步骤
+### 优化步骤
 1. 新建一个UIImage分类
 2. 定义方法
         
