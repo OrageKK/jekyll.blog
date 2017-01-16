@@ -18,5 +18,19 @@
 <!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
-
+<script>
+$(function(){
+    
+        $.iMissYou({
+            //当前网页被隐藏的时候要显示的标题
+            title:"I Miss You.",
+            //是否要切换icon， enabled布尔值设定是否开启，src用来设定使用的icon
+            favicon: {
+                enabled: true,
+                src:'iMissYouFavicon.ico'
+            }
+        });
+    
+    });
+</script>
 </html>
