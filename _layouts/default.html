@@ -16,10 +16,12 @@
 <!-- Image to hack wechat -->
 <img src="/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->
-
-</body>
-<script>
-$(function(){
+<!-- js依赖引入区 -->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/jquery.iMissYou.js"></script>
+<script type="text/javascript">
+    
+    $(function(){
     
         $.iMissYou({
             //当前网页被隐藏的时候要显示的标题
@@ -32,5 +34,7 @@ $(function(){
         });
     
     });
+    
 </script>
+</body>
 </html>
