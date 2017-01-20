@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "AFNETworking A memory leak"
+title:      "AFNetworking A memory leak"
 subtitle:   "Bug，iOS"
 date:       2017-01-19
 author:     "oragekk"
