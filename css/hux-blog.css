@@ -480,9 +480,6 @@ pre code {
     font-size: 20px;
   }
 }
-.post-preview {
-  background: #f1f1f1;
-}
 .post-preview > a {
   color: #404040;
 }
