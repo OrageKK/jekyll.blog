@@ -58,6 +58,6 @@
   }
 
   document.onclick = redraw;
-  document.ontouchstart = redraw;
+  // document.ontouchstart = redraw;
   redraw();
 }();
