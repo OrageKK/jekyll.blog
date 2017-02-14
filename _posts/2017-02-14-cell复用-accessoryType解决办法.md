@@ -20,16 +20,10 @@ tags:
 - 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
 		
 		-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-
-    	cell.accessoryType = UITableViewCellAccessoryCheckmark;
-
+		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 		}
-
-		-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    	[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
+		-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {		[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
 		}
 		
 ### 重点来了 两种思路
@@ -73,12 +67,12 @@ tags:
 	
 			- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     		[super setSelected:selected animated:animated];
-
-    		self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
-    		// Configure the view for the selected state
+			self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
+			// Configure the view for the selected state
 			}
-	- 在 cellForRow里：
 			
+	- 在 cellForRow里：
+	
 			cell.accessoryType = cell.selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
 			
 
