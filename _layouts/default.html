@@ -7,9 +7,9 @@
 <body ontouchstart="">
 
     {% include nav.html %}
-
+<div id="particles-js">
     {{ content }}
-<div id="particles-js"></div>
+</div>
     {% include footer.html %}
 
 
@@ -99,7 +99,7 @@ particlesJS('particles-js',
       "line_linked": {
         "enable": true,
         "distance": 40,
-        "color": "#fff",
+        "color": "#263238",
         "opacity": 1,
         "width": 1
       },
@@ -118,7 +118,7 @@ particlesJS('particles-js',
       }
     },
     "interactivity": {
-      "detect_on": "window",//canvas
+      "detect_on": "canvas",//canvas
       "events": {
         "onhover": {
           "enable": true,
