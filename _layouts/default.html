@@ -7,9 +7,9 @@
 <body ontouchstart="">
 
     {% include nav.html %}
-<div id="particles-js">
+<!--<div id="particles-js">-->
     {{ content }}
-</div>
+<!--</div>-->
     {% include footer.html %}
 
 
@@ -118,7 +118,7 @@ particlesJS('particles-js',
       }
     },
     "interactivity": {
-      "detect_on": "canvas",//canvas
+      "detect_on": "window",//canvas
       "events": {
         "onhover": {
           "enable": true,
