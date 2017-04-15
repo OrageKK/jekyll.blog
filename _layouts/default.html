@@ -5,17 +5,17 @@
 
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="">
-
+<div id="particles-js">
     {% include nav.html %}
 
     {{ content }}
 
     {% include footer.html %}
 
-
+</div>
 <!-- Image to hack wechat -->
 <img src="/img/icon_wechat.png" width="0" height="0" />
-<div id="particles-js"></div>
+
 <!-- Migrate from head to bottom, no longer block render and still work -->
 <!-- js依赖引入区 -->
 <script type="text/javascript">
@@ -118,7 +118,7 @@ particlesJS('particles-js',
       }
     },
     "interactivity": {
-      "detect_on": "canvas",
+      "detect_on": "window",//canvas
       "events": {
         "onhover": {
           "enable": true,
