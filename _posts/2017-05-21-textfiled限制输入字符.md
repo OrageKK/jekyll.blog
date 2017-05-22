@@ -64,8 +64,7 @@ tags:
                     textField.text = [toBeString substringWithRange:rangeRange];
                 }
             }
-        }
-        
+        } 
     	}
     		// 中文输入法以外的直接对其统计限制即可，不考虑其他语种情况
     		else
