@@ -16,8 +16,9 @@ tags:
 
  - 首先在ViewDidLoad中注册通知
     
-    	[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(textFieldEditChanged:)
-                                                name:@"UITextFieldTextDidChangeNotification" object:self.userTF];
+
+		[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(textFieldEditChanged:)
+		name:@"UITextFieldTextDidChangeNotification" object:self.userTF];
                                                 
 - 下面是判断逻辑 由于需求有中文键盘下的字母数字输入，所以其中那部分判断如不需要可以去除
 
@@ -66,10 +67,10 @@ tags:
         }
         
     	}
-    	// 中文输入法以外的直接对其统计限制即可，不考虑其他语种情况
-    	else
-    	{
-        	if (toBeString.length > MAX_ENGLISH_LENGTH)
+    		// 中文输入法以外的直接对其统计限制即可，不考虑其他语种情况
+    		else
+    		{
+        		if (toBeString.length > MAX_ENGLISH_LENGTH)
         		{
             		NSRange rangeIndex = [toBeString rangeOfComposedCharacterSequenceAtIndex:MAX_ENGLISH_LENGTH];
             		if (rangeIndex.length == 1)
