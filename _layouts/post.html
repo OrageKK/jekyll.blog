@@ -5,7 +5,7 @@ layout: default
 <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
 <!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
-
+<link rel="stylesheet" href="/your/path/pygments.css">
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
@@ -37,6 +37,7 @@ layout: default
 </header>
 
 <!-- Post Content -->
+{% highlight objective-c linenos %}
 <article>
     <div class="container">
         <div class="row">
@@ -46,8 +47,10 @@ layout: default
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
                 post-container">
-
-				{{ content }}
+                
+                {{ content }}
+                {% endhighlight %}
+				
 
                 <hr>
 
