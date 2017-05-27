@@ -13,7 +13,7 @@ tags:
 ---
 > 本文介绍使用WKWebView拦截url进行原生界面跳转
 
-[![3.md.gif](https://storage1.cuntuku.com/2017/05/27/3.md.gif)](https://cuntuku.com/image/48Ct0)
+![3.gif](https://storage1.cuntuku.com/2017/05/27/3.gif)
 
 * 使用代理方法decidePolicyForNavigationAction
 
