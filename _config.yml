@@ -44,8 +44,7 @@ gems: [jekyll-paginate]
 markdown: kramdown
 kramdown:
   input: GFM                            # use Github Flavored Markdown !important
-  coderay_default_lang: objc
-
+  syntax_highlighter: rouge
 
 # Disqus settings
 disqus_username: oragekk
