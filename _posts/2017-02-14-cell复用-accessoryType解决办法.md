@@ -14,17 +14,16 @@ tags:
 > 今天项目里出现一个问题，就是做一个列表选择，然后点击导航栏的确定按钮返回上级界面，并把选择的cell数据传递到上级界面。再使用accessoryType属性标记单元格之后会出现重用问题。
 
 ## 解决办法
-- 把tableView的allowsMultipleSelection 属性设为了YES；
+* 把tableView的allowsMultipleSelection 属性设为了YES；
 
 	``` objc
 	_tableView.allowsMultipleSelection = YES;
 	``` 
 	
-- 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
+* 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
 
-	``` objc
-   
-	-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+``` objc
+   -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 		
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     	
@@ -33,7 +32,7 @@ tags:
 	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
 	}	
-	```
+```
 	
 ### 重点来了 两种思路
 
@@ -44,7 +43,7 @@ tags:
  	
 	 NSMutableArray* selectionArray = [NSMutableArray array];
 	 for (NSInteger i = 0; i < _dataArray.count; i++) {
-     [selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
+    	[selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
 	 }
 	 self.selectionArray = selectionArray; 
 	 
@@ -56,20 +55,20 @@ tags:
 
    // 3.在 didDeselectRowAtIndexPath里：
    
-	 	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
+	 [self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
 	
-	 	[self.tableView reloadData];
+	 [self.tableView reloadData];
 
    // 4.在 cellForRow里：
-		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-		cell.textLabel.text = _dataArray[indexPath.row];
-		NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
-		if (selected == 0) {
-    	cell.accessoryType = UITableViewCellAccessoryNone;
-		} else {
-    		cell.accessoryType = UITableViewCellAccessoryCheckmark;
-		}
-		return cell;
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+	cell.textLabel.text = _dataArray[indexPath.row];
+	NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
+	if (selected == 0) {
+    cell.accessoryType = UITableViewCellAccessoryNone;
+	} else {
+    	cell.accessoryType = UITableViewCellAccessoryCheckmark;
+	}
+	return cell;
 ```
 		
 * 利用cell的selected属性
