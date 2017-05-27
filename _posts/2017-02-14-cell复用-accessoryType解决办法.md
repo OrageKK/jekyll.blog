@@ -20,73 +20,72 @@ tags:
 	_tableView.allowsMultipleSelection = YES;
 	``` 
 - 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
-
-	``` objc
+   
+   ``` objc
 	-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 		
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     	
-	cell.accessoryType = UITableViewCellAccessoryCheckmark;
+		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 		
 	}
 		
 	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {		
-	[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
-		
+		[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
 	}	
 	```
 	
 ### 重点来了 两种思路
+
  - 记录选择的indexpath
- 	
- 	1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。
+ 	* 1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。
  	
  	``` objc
-	NSMutableArray* selectionArray = [NSMutableArray array];
-	for (NSInteger i = 0; i < _dataArray.count; i++) {
-    [selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
-	}
-	self.selectionArray = selectionArray; 
+	 NSMutableArray* selectionArray = [NSMutableArray array];
+	 for (NSInteger i = 0; i < _dataArray.count; i++) {
+     [selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
+	 }
+	 self.selectionArray = selectionArray; 
 	```
 
-   2.在 didSelectRowAtIndexPath:里
+   * 2.在 didSelectRowAtIndexPath:里
    
  	``` objc
-	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(1)];
+	 [self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(1)];
 	
-	[self.tableView reloadData];
+	 [self.tableView reloadData];
 	```
 	
-   3.在 didDeselectRowAtIndexPath里：
+   * 3.在 didDeselectRowAtIndexPath里：
    
    ``` objc
-	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
+	 [self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
 	
-	[self.tableView reloadData];
+	 [self.tableView reloadData];
 	```
-   4.在 cellForRow里：
+   * 4.在 cellForRow里：
  	
  	``` objc
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-	cell.textLabel.text = _dataArray[indexPath.row];
-	NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
-	if (selected == 0) {
-    cell.accessoryType = UITableViewCellAccessoryNone;
-	} else {
-    	cell.accessoryType = UITableViewCellAccessoryCheckmark;
-	}
-	return cell;
+		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+		cell.textLabel.text = _dataArray[indexPath.row];
+		NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
+		if (selected == 0) {
+    	cell.accessoryType = UITableViewCellAccessoryNone;
+		} else {
+    		cell.accessoryType = UITableViewCellAccessoryCheckmark;
+		}
+		return cell;
 	```
 		
 - 利用cell的selected属性
 	- 继承UITableViewCell，在setSeleted:animated:方法里面，根据选择状态，修改accessoryType
 	
 	``` objc
-	- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    	[super setSelected:selected animated:animated];
-		self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
-		// Configure the view for the selected state
-	}
+	 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    	 [super setSelected:selected animated:animated];
+		 self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
+		 // Configure the view for the selected state
+	 }
 	```		
 	- 在 cellForRow里：
 
