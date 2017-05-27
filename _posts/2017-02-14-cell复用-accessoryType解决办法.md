@@ -37,9 +37,9 @@ tags:
 	
 ### 重点来了 两种思路
 
- - 记录选择的indexpath
+ * 记录选择的indexpath
  	
- 	``` objc
+``` objc
  	// 1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。
  	
 	 NSMutableArray* selectionArray = [NSMutableArray array];
@@ -47,26 +47,20 @@ tags:
      [selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
 	 }
 	 self.selectionArray = selectionArray; 
-	
-
+	 
    // 2.在 didSelectRowAtIndexPath:里
    
- 	
 	 [self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(1)];
 	
 	 [self.tableView reloadData];
 
-	
    // 3.在 didDeselectRowAtIndexPath里：
    
-
-	 [self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
+	 	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
 	
-	 [self.tableView reloadData];
+	 	[self.tableView reloadData];
 
    // 4.在 cellForRow里：
- 	
-
 		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		cell.textLabel.text = _dataArray[indexPath.row];
 		NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
@@ -76,12 +70,13 @@ tags:
     		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 		}
 		return cell;
-	```
+```
 		
-- 利用cell的selected属性
-	- 继承UITableViewCell，在setSeleted:animated:方法里面，根据选择状态，修改accessoryType
+* 利用cell的selected属性
+
+	* 继承UITableViewCell，在setSeleted:animated:方法里面，根据选择状态，修改accessoryType
 	
-	``` objc
+``` objc
 	 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     	 [super setSelected:selected animated:animated];
 		 self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
@@ -91,7 +86,7 @@ tags:
 	// 在 cellForRow里：
 	cell.accessoryType = cell.selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
 	
-	```
+```
 			
 
 ### 至此已完美解决因为复用所导致的问题
