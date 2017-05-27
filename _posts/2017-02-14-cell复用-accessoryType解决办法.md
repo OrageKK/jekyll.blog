@@ -19,9 +19,11 @@ tags:
 	``` objc
 	_tableView.allowsMultipleSelection = YES;
 	``` 
+	
 - 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
+
+	``` objc
    
-   ``` objc
 	-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 		
     	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -29,7 +31,6 @@ tags:
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 		
 	}
-		
 	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {		
 		[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
 	}	
@@ -38,34 +39,35 @@ tags:
 ### 重点来了 两种思路
 
  - 记录选择的indexpath
- 	* 1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。
  	
  	``` objc
+ 	// 1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。
+ 	
 	 NSMutableArray* selectionArray = [NSMutableArray array];
 	 for (NSInteger i = 0; i < _dataArray.count; i++) {
      [selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
 	 }
 	 self.selectionArray = selectionArray; 
-	```
+	
 
-   * 2.在 didSelectRowAtIndexPath:里
+   // 2.在 didSelectRowAtIndexPath:里
    
- 	``` objc
+ 	
 	 [self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(1)];
 	
 	 [self.tableView reloadData];
-	```
+
 	
-   * 3.在 didDeselectRowAtIndexPath里：
+   // 3.在 didDeselectRowAtIndexPath里：
    
-   ``` objc
+
 	 [self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
 	
 	 [self.tableView reloadData];
-	```
-   * 4.在 cellForRow里：
+
+   // 4.在 cellForRow里：
  	
- 	``` objc
+
 		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		cell.textLabel.text = _dataArray[indexPath.row];
 		NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
@@ -86,10 +88,8 @@ tags:
 		 self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
 		 // Configure the view for the selected state
 	 }
-	```		
-	- 在 cellForRow里：
-
-	``` objc
+	 
+	// 在 cellForRow里：
 	cell.accessoryType = cell.selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
 	```
 			
