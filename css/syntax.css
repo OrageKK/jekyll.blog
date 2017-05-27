@@ -159,7 +159,7 @@
   color: #ffffff;
 }
 .highlight .nn {
-  color: #ffffff;
+  color: #70827D;
 }
 .highlight .nl {
   color: #ffffff;
@@ -186,7 +186,7 @@
   color: #ffffff;
 }
 .highlight .n, .highlight .py, .highlight .nx {
-  color: #ffffff;
+  color: #70827D;
 }
 .highlight .ow {
   color: #f92672;
@@ -235,4 +235,5 @@ div[class="highlighter-rouge"] > pre[class="highlight"] {
   background:black;
 }
 .lineno {color: #f8f8f2 } /*Number of line*/
-pre[class='highlight'] {background-color:#000000;}
+pre[class='highlight'] {background-color:#022028
+;}
