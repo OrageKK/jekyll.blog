@@ -23,15 +23,16 @@ tags:
 * 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
 
 ``` objc
-   -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 		
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     	
 	  cell.accessoryType = UITableViewCellAccessoryCheckmark;
-	}
-	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+}
+	
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
-	}	
+}	
 ```
 	
 ### 重点来了 两种思路
