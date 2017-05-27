@@ -26,13 +26,12 @@ tags:
    
 	-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 		
-    	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     	
-		cell.accessoryType = UITableViewCellAccessoryCheckmark;
-		
+	  cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
-	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {		
-		[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
+	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+	[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
 	}	
 	```
 	
@@ -91,6 +90,7 @@ tags:
 	 
 	// 在 cellForRow里：
 	cell.accessoryType = cell.selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
+	
 	```
 			
 
