@@ -14,7 +14,7 @@ tags:
 >通过js判断moblie端和pc端进而加载不同的css或者js
 
 ## 废话不多说，上代码
-``` JavaScript
+``` js
 		<script type="text/javascript">
 		function browserRedirect() {
 		var sUserAgent = navigator.userAgent.toLowerCase();

@@ -22,7 +22,6 @@ tags:
 - 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
 
 	``` objc
-		
 	-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 		
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -34,8 +33,7 @@ tags:
 	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {		
 	[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
 		
-	}
-		
+	}	
 	```
 	
 ### 重点来了 两种思路
@@ -44,26 +42,26 @@ tags:
  	1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。
  	
  	``` objc
- 	
 	NSMutableArray* selectionArray = [NSMutableArray array];
 	for (NSInteger i = 0; i < _dataArray.count; i++) {
     [selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
 	}
-	self.selectionArray = selectionArray;
-		
+	self.selectionArray = selectionArray; 
 	```
 
    2.在 didSelectRowAtIndexPath:里
    
  	``` objc
 	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(1)];
+	
 	[self.tableView reloadData];
 	```
+	
    3.在 didDeselectRowAtIndexPath里：
    
- 	``` objc
+   ``` objc
 	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
-		
+	
 	[self.tableView reloadData];
 	```
    4.在 cellForRow里：
