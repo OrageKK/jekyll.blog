@@ -16,82 +16,105 @@ tags:
 ## 解决办法
 - 把tableView的allowsMultipleSelection 属性设为了YES；
 
-		_tableView.allowsMultipleSelection = YES;
+	``` objc
+	_tableView.allowsMultipleSelection = YES;
+	``` 
 - 在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。
+
+	``` objc
 		
-		-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-		cell.accessoryType = UITableViewCellAccessoryCheckmark;
-		}
-		-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {		[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
-		}
+	-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 		
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    	
+	cell.accessoryType = UITableViewCellAccessoryCheckmark;
+		
+	}
+		
+	-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {		
+	[tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
+		
+	}
+		
+	```
+	
 ### 重点来了 两种思路
  - 记录选择的indexpath
  	
  	1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。
  	
-		NSMutableArray* selectionArray = [NSMutableArray array];
-		for (NSInteger i = 0; i < _dataArray.count; i++) {
-    	[selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
-		}
-		self.selectionArray = selectionArray;
+ 	``` objc
+ 	
+	NSMutableArray* selectionArray = [NSMutableArray array];
+	for (NSInteger i = 0; i < _dataArray.count; i++) {
+    [selectionArray addObject:@(0)]; // 0 表示未选中，1 表示选中了
+	}
+	self.selectionArray = selectionArray;
 		
-
+	```
 
    2.在 didSelectRowAtIndexPath:里
- 	
-		[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(1)];
-		[self.tableView reloadData];
-		
-   3.在 didDeselectRowAtIndexPath里：
- 	
-		[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
+   
+ 	``` objc
+	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(1)];
 	[self.tableView reloadData];
-	
+	```
+   3.在 didDeselectRowAtIndexPath里：
+   
+ 	``` objc
+	[self.selectionArray replaceObjectAtIndex:indexPath.row withObject:@(0)];
+		
+	[self.tableView reloadData];
+	```
    4.在 cellForRow里：
  	
-		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-		cell.textLabel.text = _dataArray[indexPath.row];
-		NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
-		if (selected == 0) {
-    	cell.accessoryType = UITableViewCellAccessoryNone;
-		} else {
+ 	``` objc
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+	cell.textLabel.text = _dataArray[indexPath.row];
+	NSInteger selected = [self.selectionArray[indexPath.row] IntegerValue];
+	if (selected == 0) {
+    cell.accessoryType = UITableViewCellAccessoryNone;
+	} else {
     	cell.accessoryType = UITableViewCellAccessoryCheckmark;
-		}
-		return cell;
-		
+	}
+	return cell;
+	```
 		
 - 利用cell的selected属性
 	- 继承UITableViewCell，在setSeleted:animated:方法里面，根据选择状态，修改accessoryType
 	
-			- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    		[super setSelected:selected animated:animated];
-			self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
-			// Configure the view for the selected state
-			}
-			
+	``` objc
+	- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    	[super setSelected:selected animated:animated];
+		self.accessoryType = selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
+		// Configure the view for the selected state
+	}
+	```		
 	- 在 cellForRow里：
-	
-			cell.accessoryType = cell.selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
+
+	``` objc
+	cell.accessoryType = cell.selected?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
+	```
 			
 
 ### 至此已完美解决因为复用所导致的问题
 
+``` objc
 	// 设置tableView可不可以选中
-    //self.tableView.allowsSelection = NO;
+    self.tableView.allowsSelection = NO;
 
     // 允许tableview多选
-    //self.tableView.allowsMultipleSelection = YES;
+    self.tableView.allowsMultipleSelection = YES;
 
     // 编辑模式下是否可以选中
-    //self.tableView.allowsSelectionDuringEditing = NO;
+    self.tableView.allowsSelectionDuringEditing = NO;
 
     // 编辑模式下是否可以多选
-    //self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
 
     // 获取被选中的所有行
-    // [self.tableView indexPathsForSelectedRows]
+     [self.tableView indexPathsForSelectedRows]
 
     // 获取当前可见的行
-    // [self.tableView indexPathsForVisibleRows];
+     [self.tableView indexPathsForVisibleRows];
+```

@@ -14,6 +14,8 @@ tags:
 >细心的你是否也发现了AFN的内存泄漏的问题了呢.
 
 ### 解决方法
+
+``` objc
     + (AFHTTPSessionManager *)sharedHTTPSession{
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -31,5 +33,5 @@ tags:
     });
     return urlsession;
     }
-    
+```  
 >将有问题的语句全部替换成单例后，再用instruments检查，再也没有出现泄漏的红叉了。O(∩_∩)O哈哈~
