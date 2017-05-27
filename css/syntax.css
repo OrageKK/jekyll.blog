@@ -235,3 +235,4 @@ div[class="highlighter-rouge"] > pre[class="highlight"] {
   background:black;
 }
 .lineno {color: #f8f8f2 } /*Number of line*/
+pre[class='highlight'] {background-color:#000000;}
