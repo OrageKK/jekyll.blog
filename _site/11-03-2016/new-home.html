@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="关于开发与设计、黑客与画家 | 黄坤，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Oragekk黄坤 的个人博客，与你一起发现更大的世界。">
+    <meta name="keywords"  content="黄坤, Oragekk, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, iOS, Lynn">
+    <meta name="theme-color" content="#000000">
+    
+    <title>Welcome to Oragekk Blog - Oragekk's Blog - 心之所向，身亦至之</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://oragekk.github.io/11-03-2016/new-home.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+    <!--<link rel="stylesheet" href="/css/pygments.css">-->
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Oragekk Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                        <!--
+                        <div class="list-group">
+                        <a class="list-group-item" href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; HOME</a>
+                        </div>
+                        -->
+                    </li>
+                    
+                    <li>
+                        <a href="/about">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+  <!--<div id="particles-js">-->
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-2015.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post-bg-2015.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#生活" title="生活">生活</a>
+                        
+                    </div>
+                    <h1>Welcome to Oragekk Blog</h1>
+                    
+                    
+                    <h2 class="subheading"> "我们有很多的声音而没有真理，我们来自一个良心却各自藏起"</h2>
+                    
+                    <span class="meta">Posted by Oragekk on November 3, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+                
+                <blockquote>
+  <p>“Yeah It’s on. ”</p>
+</blockquote>
+
+<h2 id="前言">前言</h2>
+
+<p>Oragekk 的 Blog 就这么开通了。</p>
+
+<p><a href="#build">跳过废话，直接看技术实现 </a></p>
+
+<p>2016 年，11月 总算有个地方可以好好写点东西了。</p>
+
+<p>作为一个程序员， 看多了别人的Blog 这种轮子都是酷炫的不要不要的，自己其实一种想搞一个，前两天发现了GitHub Pages +Jekyll的技术方案，一下子就上瘾了。</p>
+
+<p>终于可以有自己的自留地了，之前一直在简书上写一些技术类的文章，这次可以有个自己的地盘，想怎么写就怎么写。😝哈哈。不过这些前端的东西对我也是一种挑战，似懂非懂的看着模板，和一堆js+css+html的代码。。一顿头大。。对照着效果，一步步自己改。改好了之后也是蛮有成就感的嘛</p>
+
+<p id="build"></p>
+<hr />
+
+<h2 id="正文">正文</h2>
+
+<p>接下来说说搭建这个博客的技术细节。</p>
+
+<p>正好之前就有关注过 <a href="https://pages.github.com/">GitHub Pages</a> + <a href="http://jekyllrb.com/">Jekyll</a> 快速 Building Blog 的技术方案，非常轻松时尚。</p>
+
+<p>其优点非常明显：</p>
+
+<ul>
+  <li><strong>Markdown</strong> 带来的优雅写作体验</li>
+  <li>非常熟悉的 Git workflow ，<strong>Git Commit 即 Blog Post</strong></li>
+  <li>利用 GitHub Pages 的域名和免费无限空间，不用自己折腾主机
+    <ul>
+      <li>如果需要自定义域名，也只需要简单改改 DNS 加个 CNAME 就好了</li>
+    </ul>
+  </li>
+  <li>Jekyll 的自定制非常容易，基本就是个模版引擎</li>
+  <li>Jekyll的安装倒是不难，难的是安装它之前的一堆安装</li>
+</ul>
+
+<hr />
+
+<p>配置的过程中也没遇到什么坑，基本就是 Git 的流程，相当顺手</p>
+
+<p>大的 Jekyll 主题直接 fork 了 Hux Blog
+本地调试环境需要 <code class="highlighter-rouge">gem install jekyll</code>，结果 rubygem 的源居然被墙了……后来手动改成了我大淘宝的镜像源才成功，现在淘宝的镜像地址也重定向了到<a href="http://gems.ruby-china.org/">gems.ruby-china.org</a> 公司的新电脑，正好连带配环境，装rvm，ruby，gems，jekyll。搞定。不过最后的本地预览还是没搞好。索性我就改了commit，去站点看效果。</p>
+
+<p>之后看到域名还是github提供的固定域名，心里觉得不够高大上，果断万网去买了一个。还很便宜咯。。不过价格就不告诉你们了😜</p>
+
+<hr />
+<p>以下引用自Theme作者</p>
+
+<blockquote>
+  <p>Theme 的 CSS 是基于 Bootstrap 定制的，看得不爽的地方直接在 Less 里改就好了（平时更习惯 SCSS 些），<strong>不过其实我一直觉得 Bootstrap 在移动端的体验做得相当一般，比我在淘宝参与的团队 CSS 框架差多了……</strong>所以为了体验，也补了不少 CSS 进去</p>
+</blockquote>
+
+<blockquote>
+  <p>最后就进入了耗时反而最长的<strong>做图、写字</strong>阶段，也算是进入了<strong>写博客</strong>的正轨，因为是类似 Hack Day 的方式去搭这个站的，所以折腾折腾着大半夜就过去了。</p>
+</blockquote>
+
+<blockquote>
+  <p>第二天考虑中文字体的渲染，fork 了 <a href="http://www.typeisbeautiful.com/">Type is Beautiful</a> 的 <code class="highlighter-rouge">font</code> CSS，调整了字号，适配了 Win 的渣渲染，中英文混排效果好多了。</p>
+</blockquote>
+
+<hr />
+
+<h2 id="后记">后记</h2>
+
+<p>回顾这个博客的诞生，纯粹是出于个人兴趣。为了有个块自留地，可以无聊了写写，不开心了写写。</p>
+
+<p>如果你恰好逛到了这里，希望你也能喜欢这个博客</p>
+
+<p>—— 黄坤 后记于 2016.11</p>
+
+				
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/09-22-2015/js-version.html" data-toggle="tooltip" data-placement="top" title="Example Post">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/11-04-2016/Programmers-in-Jianshu.html" data-toggle="tooltip" data-placement="top" title="Programmers in Jianshu">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#前端开发" title="前端开发" rel="12">
+                                    前端开发
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#JavaScript" title="JavaScript" rel="4">
+                                    JavaScript
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#生活" title="生活" rel="3">
+                                    生活
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="18">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#工具集" title="工具集" rel="8">
+                                    工具集
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#Bug录" title="Bug录" rel="2">
+                                    Bug录
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#杂货铺" title="杂货铺" rel="4">
+                                    杂货铺
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="https://www.anotherhome.net/">当时只道是寻常</a></li>
+                    
+                        <li><a href="http://su.gallery/">Su</a></li>
+                    
+                        <li><a href="http://www.yinhaomin.com/">殷浩民的博客</a></li>
+                    
+                        <li><a href="http://mida.re/">乱序</a></li>
+                    
+                        <li><a href="http://qianduan.guru/">前端外刊评论</a></li>
+                    
+                        <li><a href="http://hmqk1995.github.io">Luke 的自留地</a></li>
+                    
+                        <li><a href="http://ebnbin.com/">Ebn's Blog</a></li>
+                    
+                        <li><a href="http://blog.smdcn.net">SmdCn's Blog</a></li>
+                    
+                        <li><a href="http://dhong.co">DHong Say</a></li>
+                    
+                        <li><a href="http://www.jianshu.com/u/55c8fdc3c6e7">曲天白的简书</a></li>
+                    
+                        <li><a href="https://prprpr.xyz/">qwq的一篇天地</a></li>
+                    
+                        <li><a href="http://ykksmile.top/">Ykk's blog'</a></li>
+                    
+                        <li><a href="http://u-hey.com/">UHEY's BLOG'</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "oragekk";
+    var disqus_identifier = "/11-03-2016/new-home";
+    var disqus_url = "https://oragekk.github.io/11-03-2016/new-home.html";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    <li>
+                        <a target="_blank" href="http://www.jianshu.com/users/752cf0a6b9b4/latest_articles">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">简</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/hkoragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Oragekk Blog 2017
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=oragekk&repo=oragekk.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+<script src="/js/jquery.iMissYou.js "></script>
+<script type="text/javascript">
+    
+    $(function(){
+    
+        $.iMissYou({
+            //当前网页被隐藏的时候要显示的标题
+            title:"~~(>_<)~~ I Miss You.",
+            //是否要切换icon， enabled布尔值设定是否开启，src用来设定使用的icon
+            favicon: {
+                enabled: true,
+                src:'http://oragekk.me/img/iMissYouFavicon.ico'
+            }
+        });
+    
+    });
+    
+</script>
+<!-- Service Worker -->
+
+<script type="text/javascript">
+    if(navigator.serviceWorker){
+        // For security reasons, a service worker can only control the pages that are in the same directory level or below it. That's why we put sw.js at ROOT level.
+        navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {console.log('Service Worker Registered. ', registration)})
+            .catch((error) => {console.log('ServiceWorker registration failed: ', error)})
+    }
+</script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+<!-- 百度自动推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-86818126-1';
+    var _gaDomain = 'oragekk.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+<!--</div>-->
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+
+<!-- Migrate from head to bottom, no longer block render and still work -->
+<!-- js依赖引入区 -->
+<script type="text/javascript">
+function browserRedirect() {
+var sUserAgent = navigator.userAgent.toLowerCase();
+var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+var bIsAndroid = sUserAgent.match(/android/i) == "android";
+var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+// document.writeln("您的浏览设备为：");
+if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+
+// alert("手机浏览！");
+
+
+} else {
+
+// alert("PC浏览！");
+/// 一下两行代码为点击背景彩虹条和鼠标特效
+// document.write("<script type='text/javascript' size='150' alpha='0.8' zIndex='-10' src='../js/dist/ribbon.js'><\/script>");
+// document.write("<script type='text/javascript' color='0,188,212' opacity='0.7' zIndex='-2' count='99' src='http://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js'><\/script>");
+// 粒子特效更换为maxjia.js---http://cdn.maxjia.com/js/particles.min.js
+// document.write("<script src='http://cdn.maxjia.com/js/particles.min.js'><\/script>");
+}
+}
+browserRedirect();
+</script>
+<script type="text/javascript">
+particlesJS('particles-js',
+  {
+    "particles": {
+      "number": {
+        "value": 110,
+        "density": {
+          "enable": true,
+          "value_area": 800
+        }
+      },
+      "color": {
+        "value": "#00BFA5"//#00BFA5
+      },
+      "shape": {
+        "type": "circle",
+        "stroke": {
+          "width": 0,
+          "color": "#000000"
+        },
+        "polygon": {
+          "nb_sides": 5
+        },
+        "image": {
+          "src": "img/github.svg",
+          "width": 100,
+          "height": 100
+        }
+      },
+      "opacity": {
+        "value": 0.5,
+        "random": false,
+        "anim": {
+          "enable": false,
+          "speed": 1,
+          "opacity_min": 0.1,
+          "sync": false
+        }
+      },
+      "size": {
+        "value": 1,
+        "random": true,
+        "anim": {
+          "enable": false,
+          "speed": 20,
+          "size_min": 0.1,
+          "sync": false
+        }
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 40,
+        "color": "#263238",
+        "opacity": 1,
+        "width": 1
+      },
+      "move": {
+        "enable": true,
+        "speed": 3,
+        "direction": "none",
+        "random": false,
+        "straight": false,
+        "out_mode": "out",
+        "attract": {
+          "enable": false,
+          "rotateX": 600,
+          "rotateY": 1200
+        }
+      }
+    },
+    "interactivity": {
+      "detect_on": "window",//canvas
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "grab"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 120,
+          "line_linked": {
+            "opacity": 1
+          }
+        },
+        "bubble": {
+          "distance": 400,
+          "size": 40,
+          "duration": 2,
+          "opacity": 8,
+          "speed": 3
+        },
+        "repulse": {
+          "distance": 300
+        },
+        "push": {
+          "particles_nb": 4
+        },
+        "remove": {
+          "particles_nb": 2
+        }
+      }
+    },
+    "retina_detect": true,
+    "config_demo": {
+      "hide_card": false,
+      "background_color": "#b61924",
+      "background_image": "",
+      "background_position": "50% 50%",
+      "background_repeat": "no-repeat",
+      "background_size": "cover"
+    }
+  }
+
+);
+</script>
+</body>
+</html>

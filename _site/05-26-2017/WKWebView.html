@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="关于开发与设计、黑客与画家 | 黄坤，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Oragekk黄坤 的个人博客，与你一起发现更大的世界。">
+    <meta name="keywords"  content="黄坤, Oragekk, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, iOS, Lynn">
+    <meta name="theme-color" content="#000000">
+    
+    <title>WKWebView使用及自适应高度 - Oragekk's Blog - 心之所向，身亦至之</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://oragekk.github.io/05-26-2017/WKWebView.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+    <!--<link rel="stylesheet" href="/css/pygments.css">-->
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Oragekk Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                        <!--
+                        <div class="list-group">
+                        <a class="list-group-item" href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; HOME</a>
+                        </div>
+                        -->
+                    </li>
+                    
+                    <li>
+                        <a href="/about">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+  <!--<div id="particles-js">-->
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-ios-demo-testcallphone.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post-bg-ios-demo-testcallphone.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                        <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
+                        
+                        <a class="tag" href="/tags/#杂货铺" title="杂货铺">杂货铺</a>
+                        
+                    </div>
+                    <h1>WKWebView使用及自适应高度</h1>
+                    
+                    
+                    <h2 class="subheading">iOS，前端开发，杂货铺</h2>
+                    
+                    <span class="meta">Posted by oragekk on May 26, 2017</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+                
+                <blockquote>
+  <p>记录一下iOS8 之后的新控件WKWebView，用以替代之前的UIWebView，因为需求是在TableView的Cell中放一个WebView。就产生了滑动手势冲突，为了解决这个问题就需要让webView高度自适应</p>
+  <h2 id="一新特性">一、新特性</h2>
+  <ul>
+    <li>在性能、稳定性、功能方面有很大的提升，最明显的就是内存占用降低了很多。</li>
+    <li>允许JavaScript的Nitro库加载并使用（UIWebView中限制）</li>
+    <li>支持了更多的HTML5特性；</li>
+    <li>高达60fps的滚动刷新率以及内置手势（支持右滑返回）；</li>
+    <li>将UIWebViewDelegate与UIWebView重构成了14类与3个协议（<a href="https://developer.apple.com/reference/webkit">查看苹果官方文档</a>）；</li>
+  </ul>
+</blockquote>
+
+<h2 id="二初始化">二、初始化</h2>
+
+<ul>
+  <li>首先需要引入WebKit库</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="cp">#import &lt;WebKit/WebKit.h&gt;
+</span></code></pre>
+</div>
+<ul>
+  <li>采用configuration的方式初始化（可选）</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="n">webView</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_webView</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">WKWebViewConfiguration</span> <span class="o">*</span><span class="n">config</span> <span class="o">=</span> <span class="p">[</span><span class="n">WKWebViewConfiguration</span> <span class="nf">new</span><span class="p">];</span>
+        <span class="c1">//初始化偏好设置属性：preferences
+</span>        <span class="n">config</span><span class="p">.</span><span class="n">preferences</span> <span class="o">=</span> <span class="p">[</span><span class="n">WKPreferences</span> <span class="nf">new</span><span class="p">];</span>
+        <span class="c1">//The minimum font size in points default is 0;
+</span>        <span class="n">config</span><span class="p">.</span><span class="n">preferences</span><span class="p">.</span><span class="n">minimumFontSize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+        <span class="c1">//是否支持JavaScript
+</span>        <span class="n">config</span><span class="p">.</span><span class="n">preferences</span><span class="p">.</span><span class="n">javaScriptEnabled</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+        <span class="c1">//不通过用户交互，是否可以打开窗口
+</span>        <span class="n">config</span><span class="p">.</span><span class="n">preferences</span><span class="p">.</span><span class="n">javaScriptCanOpenWindowsAutomatically</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+        <span class="n">_webView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WKWebView</span> <span class="nf">alloc</span><span class="p">]</span><span class="nf">initWithFrame</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="nf">configuration</span><span class="p">:</span><span class="n">config</span><span class="p">];</span>
+        <span class="n">_webView</span><span class="p">.</span><span class="n">UIDelegate</span> <span class="o">=</span><span class="n">self</span><span class="p">;</span>
+        <span class="n">_webView</span><span class="p">.</span><span class="n">navigationDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+        <span class="c1">// 此处因为高度自适应所以不应该让webview内部可以滚动
+</span>        <span class="n">_webView</span><span class="p">.</span><span class="n">scrollView</span><span class="p">.</span><span class="n">scrollEnabled</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+        
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">_webView</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre>
+</div>
+<ul>
+  <li>加载网页</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="n">WKWebView</span> <span class="o">*</span><span class="n">webView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WKWebView</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithFrame</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">];</span>
+<span class="p">[</span><span class="n">webView</span> <span class="nf">loadRequest</span><span class="p">:[</span><span class="n">NSURLRequest</span> <span class="nf">requestWithURL</span><span class="p">:[</span><span class="n">NSURL</span> <span class="nf">URLWithString</span><span class="p">:</span><span class="s">@"http://m.baidu.com"</span><span class="p">]]];</span>
+<span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nf">addSubview</span><span class="p">:</span><span class="n">webView</span><span class="p">];</span>
+</code></pre>
+</div>
+<h2 id="三wkwebview代理方法">三、WKWebView代理方法</h2>
+
+<p>1.WKNavigationDelegate</p>
+
+<p>该代理提供的方法，可以用来追踪加载过程（页面开始加载、加载完成、加载失败）、决定是否执行跳转。</p>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="c1">// 页面开始加载时调用
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">didStartProvisionalNavigation</span><span class="p">:(</span><span class="n">WKNavigation</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span><span class="p">;</span>
+<span class="c1">// 当内容开始返回时调用
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">didCommitNavigation</span><span class="p">:(</span><span class="n">WKNavigation</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span><span class="p">;</span>
+<span class="c1">// 页面加载完成之后调用
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">didFinishNavigation</span><span class="p">:(</span><span class="n">WKNavigation</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span><span class="p">;</span>
+<span class="c1">// 页面加载失败时调用
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">didFailProvisionalNavigation</span><span class="p">:(</span><span class="n">WKNavigation</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<p>页面跳转的代理方法有三种，分为（收到跳转与决定是否跳转两种）</p>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="c1">// 接收到服务器跳转请求之后调用
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">didReceiveServerRedirectForProvisionalNavigation</span><span class="p">:(</span><span class="n">WKNavigation</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span><span class="p">;</span>
+<span class="c1">// 在收到响应后，决定是否跳转
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">decidePolicyForNavigationResponse</span><span class="p">:(</span><span class="n">WKNavigationResponse</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigationResponse</span> <span class="nf">decisionHandler</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">WKNavigationResponsePolicy</span><span class="p">))</span><span class="nv">decisionHandler</span><span class="p">;</span>
+<span class="c1">// 在发送请求之前，决定是否跳转
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">decidePolicyForNavigationAction</span><span class="p">:(</span><span class="n">WKNavigationAction</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigationAction</span> <span class="nf">decisionHandler</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">WKNavigationActionPolicy</span><span class="p">))</span><span class="nv">decisionHandler</span><span class="p">;</span>
+</code></pre>
+</div>
+<p>2.WKUIDelegate</p>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="c1">// 创建一个新的WebView
+</span><span class="k">-</span> <span class="p">(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">createWebViewWithConfiguration</span><span class="p">:(</span><span class="n">WKWebViewConfiguration</span> <span class="o">*</span><span class="p">)</span><span class="nv">configuration</span> <span class="nf">forNavigationAction</span><span class="p">:(</span><span class="n">WKNavigationAction</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigationAction</span> <span class="nf">windowFeatures</span><span class="p">:(</span><span class="n">WKWindowFeatures</span> <span class="o">*</span><span class="p">)</span><span class="nv">windowFeatures</span><span class="p">;</span>
+</code></pre>
+</div>
+<p>剩下三个代理方法全都是与界面弹出提示框相关的，针对于web界面的三种提示框（警告框、确认框、输入框）分别对应三种代理方法。下面只举了警告框的例子</p>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+ *  web界面中有弹出警告框时调用
+ *
+ *  @param webView           实现该代理的webview
+ *  @param message           警告框中的内容
+ *  @param frame             主窗口
+ *  @param completionHandler 警告框消失调用
+ */</span>
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">runJavaScriptAlertPanelWithMessage</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">message</span> <span class="nf">initiatedByFrame</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)())</span><span class="nv">completionHandler</span><span class="p">;</span>
+</code></pre>
+</div>
+<p>3.WKScriptMessageHandler</p>
+
+<p>这个协议中包含一个必须实现的方法，这个方法是提高App与web端交互的关键，它可以直接将接收到的JS脚本转为OC或Swift对象</p>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="c1">// 从web界面中接收到一个脚本时调用
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">userContentController</span><span class="p">:(</span><span class="n">WKUserContentController</span> <span class="o">*</span><span class="p">)</span><span class="nv">userContentController</span> <span class="nf">didReceiveScriptMessage</span><span class="p">:(</span><span class="n">WKScriptMessage</span> <span class="o">*</span><span class="p">)</span><span class="nv">message</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<h2 id="四wkwebview加载js">四、WKWebView加载JS</h2>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="c1">// js代码
+</span><span class="n">NSString</span> <span class="o">*</span><span class="n">js</span> <span class="o">=</span> <span class="s">@"	var count = document.images.length;for (var i = 0; i &lt; count; i++) {var image = document.images[i];image.style.width=320;};window.alert('找到' + count + '张图');"</span><span class="p">;</span> 
+<span class="c1">// 根据JS字符串初始化WKUserScript对象 
+</span><span class="n">WKUserScript</span> <span class="o">*</span><span class="n">script</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WKUserScript</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithSource</span><span class="p">:</span><span class="n">js</span> <span class="nf">injectionTime</span><span class="p">:</span><span class="n">WKUserScriptInjectionTimeAtDocumentEnd</span> <span class="n">forMainFrameOnly</span><span class="o">:</span><span class="nb">YES</span><span class="p">];</span> 
+<span class="c1">// 根据生成的WKUserScript对象，初始化WKWebViewConfiguration 
+</span><span class="n">WKWebViewConfiguration</span> <span class="o">*</span><span class="n">config</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WKWebViewConfiguration</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">init</span><span class="p">];</span> <span class="p">[</span><span class="n">config</span><span class="p">.</span><span class="n">userContentController</span> <span class="nf">addUserScript</span><span class="p">:</span><span class="n">script</span><span class="p">];</span> <span class="n">_webView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WKWebView</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithFrame</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span> <span class="nf">configuration</span><span class="p">:</span><span class="n">config</span><span class="p">];</span> 
+<span class="c1">// 加载html字符串
+</span><span class="p">[</span><span class="n">_webView</span> <span class="nf">loadHTMLString</span><span class="p">:</span><span class="s">@"&lt;head&gt;&lt;/head&gt;&lt;img src='http://www.nsu.edu.cn/v/2014v3/img/background/3.jpg' /&gt;"</span><span class="nf">baseURL</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+<span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nf">addSubview</span><span class="p">:</span><span class="n">_webView</span><span class="p">];</span>
+</code></pre>
+</div>
+
+<h2 id="五作为cell自适应行高">五、作为cell自适应行高</h2>
+<p><img src="https://storage2.cuntuku.com/2017/05/27/2.gif" alt="2.gif" /></p>
+
+<ul>
+  <li>在didFinishNavigation方法中获取行高，然后刷新表格，网上资料所说的获取webview.scrollview.contentsize.height本人测试不可行，此处采用调用js通过ajax获取高度</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="c1">// 页面加载完成之后调用 此方法会调用多次
+</span><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">didFinishNavigation</span><span class="p">:(</span><span class="n">null_unspecified</span> <span class="n">WKNavigation</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span> <span class="p">{</span>
+    <span class="n">__block</span> <span class="n">CGFloat</span> <span class="n">webViewHeight</span><span class="p">;</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">webView</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+    <span class="c1">//获取内容实际高度（像素）@"document.getElementById(\"content\").offsetHeight;"
+</span>    <span class="p">[</span><span class="n">webView</span> <span class="nf">evaluateJavaScript</span><span class="p">:</span><span class="s">@"document.body.scrollHeight"</span> <span class="nf">completionHandler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">id</span> <span class="n">_Nullable</span> <span class="n">result</span><span class="p">,</span><span class="n">NSError</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 此处js字符串采用scrollHeight而不是offsetHeight是因为后者并获取不到高度，看参考资料说是对于加载html字符串的情况下使用后者可以，但如果是和我一样直接加载原站内容使用前者更合适
+</span>        <span class="c1">//获取页面高度，并重置webview的frame
+</span>        <span class="n">webViewHeight</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span> <span class="nf">doubleValue</span><span class="p">];</span>
+        <span class="n">NSLog</span><span class="p">(</span><span class="s">@"%f"</span><span class="p">,</span><span class="n">webViewHeight</span><span class="p">);</span>
+        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">webViewHeight</span> <span class="o">!=</span> <span class="n">self</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">webView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">webViewHeight</span><span class="p">);</span>
+                <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nf">reloadData</span><span class="p">];</span>
+                
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">}];</span>
+    
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"结束加载"</span><span class="p">);</span>
+       
+<span class="p">}</span>
+</code></pre>
+</div>
+<ul>
+  <li>此处完成之后需要在heightforrow方法中设置cell的高为webview的高，但是会出现一个问题就是内容显示不全。还需要调用下面这个方法进行重布局</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">scrollViewDidScroll</span><span class="p">:(</span><span class="n">UIScrollView</span> <span class="o">*</span><span class="p">)</span><span class="nv">scrollView</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">([</span><span class="n">scrollView</span> <span class="nf">isKindOfClass</span><span class="p">:[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nf">class</span><span class="p">]])</span> <span class="p">{</span>
+
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">webView</span> <span class="nf">setNeedsLayout</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h2 id="六小结">六、小结</h2>
+<blockquote>
+  <p>自适应行高是本文的重点，是我自己试验了多种方法之后确定可行的方法</p>
+</blockquote>
+
+<blockquote>
+  <p>下篇文章将介绍拦截url进行原生跳转</p>
+</blockquote>
+
+				
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/05-21-2017/textfiled%E9%99%90%E5%88%B6%E8%BE%93%E5%85%A5%E5%AD%97%E7%AC%A6.html" data-toggle="tooltip" data-placement="top" title="textfield限制输入字符">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/05-27-2017/WKWebView-URL.html" data-toggle="tooltip" data-placement="top" title="WKWebView拦截URL">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#前端开发" title="前端开发" rel="12">
+                                    前端开发
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#JavaScript" title="JavaScript" rel="4">
+                                    JavaScript
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#生活" title="生活" rel="3">
+                                    生活
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="18">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#工具集" title="工具集" rel="8">
+                                    工具集
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#Bug录" title="Bug录" rel="2">
+                                    Bug录
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#杂货铺" title="杂货铺" rel="4">
+                                    杂货铺
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="https://www.anotherhome.net/">当时只道是寻常</a></li>
+                    
+                        <li><a href="http://su.gallery/">Su</a></li>
+                    
+                        <li><a href="http://www.yinhaomin.com/">殷浩民的博客</a></li>
+                    
+                        <li><a href="http://mida.re/">乱序</a></li>
+                    
+                        <li><a href="http://qianduan.guru/">前端外刊评论</a></li>
+                    
+                        <li><a href="http://hmqk1995.github.io">Luke 的自留地</a></li>
+                    
+                        <li><a href="http://ebnbin.com/">Ebn's Blog</a></li>
+                    
+                        <li><a href="http://blog.smdcn.net">SmdCn's Blog</a></li>
+                    
+                        <li><a href="http://dhong.co">DHong Say</a></li>
+                    
+                        <li><a href="http://www.jianshu.com/u/55c8fdc3c6e7">曲天白的简书</a></li>
+                    
+                        <li><a href="https://prprpr.xyz/">qwq的一篇天地</a></li>
+                    
+                        <li><a href="http://ykksmile.top/">Ykk's blog'</a></li>
+                    
+                        <li><a href="http://u-hey.com/">UHEY's BLOG'</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "oragekk";
+    var disqus_identifier = "/05-26-2017/WKWebView";
+    var disqus_url = "https://oragekk.github.io/05-26-2017/WKWebView.html";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    <li>
+                        <a target="_blank" href="http://www.jianshu.com/users/752cf0a6b9b4/latest_articles">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">简</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/hkoragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Oragekk Blog 2017
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=oragekk&repo=oragekk.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+<script src="/js/jquery.iMissYou.js "></script>
+<script type="text/javascript">
+    
+    $(function(){
+    
+        $.iMissYou({
+            //当前网页被隐藏的时候要显示的标题
+            title:"~~(>_<)~~ I Miss You.",
+            //是否要切换icon， enabled布尔值设定是否开启，src用来设定使用的icon
+            favicon: {
+                enabled: true,
+                src:'http://oragekk.me/img/iMissYouFavicon.ico'
+            }
+        });
+    
+    });
+    
+</script>
+<!-- Service Worker -->
+
+<script type="text/javascript">
+    if(navigator.serviceWorker){
+        // For security reasons, a service worker can only control the pages that are in the same directory level or below it. That's why we put sw.js at ROOT level.
+        navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {console.log('Service Worker Registered. ', registration)})
+            .catch((error) => {console.log('ServiceWorker registration failed: ', error)})
+    }
+</script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+<!-- 百度自动推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-86818126-1';
+    var _gaDomain = 'oragekk.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+<!--</div>-->
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+
+<!-- Migrate from head to bottom, no longer block render and still work -->
+<!-- js依赖引入区 -->
+<script type="text/javascript">
+function browserRedirect() {
+var sUserAgent = navigator.userAgent.toLowerCase();
+var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+var bIsAndroid = sUserAgent.match(/android/i) == "android";
+var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+// document.writeln("您的浏览设备为：");
+if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+
+// alert("手机浏览！");
+
+
+} else {
+
+// alert("PC浏览！");
+/// 一下两行代码为点击背景彩虹条和鼠标特效
+// document.write("<script type='text/javascript' size='150' alpha='0.8' zIndex='-10' src='../js/dist/ribbon.js'><\/script>");
+// document.write("<script type='text/javascript' color='0,188,212' opacity='0.7' zIndex='-2' count='99' src='http://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js'><\/script>");
+// 粒子特效更换为maxjia.js---http://cdn.maxjia.com/js/particles.min.js
+// document.write("<script src='http://cdn.maxjia.com/js/particles.min.js'><\/script>");
+}
+}
+browserRedirect();
+</script>
+<script type="text/javascript">
+particlesJS('particles-js',
+  {
+    "particles": {
+      "number": {
+        "value": 110,
+        "density": {
+          "enable": true,
+          "value_area": 800
+        }
+      },
+      "color": {
+        "value": "#00BFA5"//#00BFA5
+      },
+      "shape": {
+        "type": "circle",
+        "stroke": {
+          "width": 0,
+          "color": "#000000"
+        },
+        "polygon": {
+          "nb_sides": 5
+        },
+        "image": {
+          "src": "img/github.svg",
+          "width": 100,
+          "height": 100
+        }
+      },
+      "opacity": {
+        "value": 0.5,
+        "random": false,
+        "anim": {
+          "enable": false,
+          "speed": 1,
+          "opacity_min": 0.1,
+          "sync": false
+        }
+      },
+      "size": {
+        "value": 1,
+        "random": true,
+        "anim": {
+          "enable": false,
+          "speed": 20,
+          "size_min": 0.1,
+          "sync": false
+        }
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 40,
+        "color": "#263238",
+        "opacity": 1,
+        "width": 1
+      },
+      "move": {
+        "enable": true,
+        "speed": 3,
+        "direction": "none",
+        "random": false,
+        "straight": false,
+        "out_mode": "out",
+        "attract": {
+          "enable": false,
+          "rotateX": 600,
+          "rotateY": 1200
+        }
+      }
+    },
+    "interactivity": {
+      "detect_on": "window",//canvas
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "grab"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 120,
+          "line_linked": {
+            "opacity": 1
+          }
+        },
+        "bubble": {
+          "distance": 400,
+          "size": 40,
+          "duration": 2,
+          "opacity": 8,
+          "speed": 3
+        },
+        "repulse": {
+          "distance": 300
+        },
+        "push": {
+          "particles_nb": 4
+        },
+        "remove": {
+          "particles_nb": 2
+        }
+      }
+    },
+    "retina_detect": true,
+    "config_demo": {
+      "hide_card": false,
+      "background_color": "#b61924",
+      "background_image": "",
+      "background_position": "50% 50%",
+      "background_repeat": "no-repeat",
+      "background_size": "cover"
+    }
+  }
+
+);
+</script>
+</body>
+</html>

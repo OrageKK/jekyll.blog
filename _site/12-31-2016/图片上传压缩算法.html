@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="关于开发与设计、黑客与画家 | 黄坤，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Oragekk黄坤 的个人博客，与你一起发现更大的世界。">
+    <meta name="keywords"  content="黄坤, Oragekk, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, iOS, Lynn">
+    <meta name="theme-color" content="#000000">
+    
+    <title>iOS - Image compression algorithm - Oragekk's Blog - 心之所向，身亦至之</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://oragekk.github.io/12-31-2016/%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+    <!--<link rel="stylesheet" href="/css/pygments.css">-->
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Oragekk Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                        <!--
+                        <div class="list-group">
+                        <a class="list-group-item" href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; HOME</a>
+                        </div>
+                        -->
+                    </li>
+                    
+                    <li>
+                        <a href="/about">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+  <!--<div id="particles-js">-->
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-ios-demo-tree.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post-bg-ios-demo-tree.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                        <a class="tag" href="/tags/#工具集" title="工具集">工具集</a>
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                    </div>
+                    <h1>iOS - Image compression algorithm</h1>
+                    
+                    
+                    <h2 class="subheading">算法，iOS开发，Demo 归纳笔记</h2>
+                    
+                    <span class="meta">Posted by oragekk on December 31, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+                
+                <p><img src="https://zero-space.s3.amazonaws.com/photos/bf30834c-a9de-41f4-9f39-4f44c2f2ff13x840.jpg" alt="" /></p>
+<blockquote>
+  <p>由于最近公司在做图片相册选择上传的功能，对于图片的压缩算法这里我借鉴了ochina的ios端App。其中有涉及到图片压缩的算法，这里贴出来留待后用;</p>
+</blockquote>
+
+<h3 id="gacompressionpichandleh">GACompressionPicHandle.h</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>	<span class="cp">#import &lt;Foundation/Foundation.h&gt;
+</span>	<span class="cp">#import &lt;UIKit/UIKit.h&gt;
+</span>	<span class="cp">#import &lt;CoreGraphics/CoreGraphics.h&gt;
+</span>	
+	<span class="k">@class</span> <span class="nc">GACompressionPicHandle</span><span class="p">;</span>
+	<span class="k">@protocol</span> <span class="nc">GACompressionPicHandleDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
+	<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">CompressionPicHandle</span><span class="o">:</span><span class="p">(</span><span class="n">GACompressionPicHandle</span><span class="o">*</span> <span class="p">)</span><span class="n">handle</span>
+  			<span class="n">CompressionFailureInfo</span><span class="o">:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span> <span class="p">)</span><span class="n">info</span><span class="p">;</span>
+  	<span class="k">@end</span>
+  	
+  	<span class="cp">#define CompressionMax_W 1224
+</span>  	<span class="cp">#define CompressionMax_Size 300 * 1024
+</span>  	<span class="cm">/** OSChina 后台限制上传图片的大小*/</span>
+  	<span class="cp">#define stand_size 1024 * 800
+</span>  	<span class="cp">#define min_compressionRatio 0.3
+</span>  	
+  	<span class="k">@interface</span> <span class="nc">GACompressionPicHandle</span> <span class="p">:</span> <span class="nc">NSObject</span>
+  	
+  	<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shareCompressionPicHandle</span><span class="p">;</span>
+
+<span class="k">@property</span><span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">weak</span><span class="p">)</span><span class="n">id</span><span class="o">&lt;</span><span class="n">GACompressionPicHandleDelegate</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="p">;</span>
+
+	<span class="cm">/** 分辨率越小反而越占用时间 建议分辨率高的图片使用*/</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">NSData</span><span class="o">*</span> <span class="p">)</span><span class="nf">scaleToSize</span><span class="p">:(</span><span class="n">CGSize</span><span class="p">)</span><span class="nv">size</span>
+               <span class="nf">image</span><span class="p">:(</span><span class="n">UIImage</span><span class="o">*</span> <span class="p">)</span><span class="nv">picture</span><span class="p">;</span>
+               
+     <span class="cm">/** 受到宽高比例问题 越接近正方形所用的时间越小 */</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageByScalingAndCroppingForSize</span><span class="p">:(</span>	<span class="n">CGSize</span><span class="p">)</span><span class="nv">targetSize</span> <span class="nf">image</span><span class="p">:(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span><span class="p">;</span>
+	<span class="k">@end</span>
+</code></pre>
+</div>
+
+<h3 id="gacompressionpichandlem">GACompressionPicHandle.m</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>	<span class="cp">#import "GACompressionPicHandle.h"
+</span>	
+	<span class="k">@implementation</span> <span class="nc">GACompressionPicHandle</span>
+	
+	<span class="k">static</span> <span class="n">GACompressioinPicHandle</span><span class="o">*</span><span class="n">_shareCompressionPicHandle</span><span class="p">;</span>
+	
+	<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shareCompressionPicHandle</span><span class="p">{</span>
+		<span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+		<span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+    		<span class="n">_shareCompressionPicHandle</span> <span class="o">=</span> 					<span class="p">[[</span><span class="n">GACompressionPicHandle</span> <span class="nf">alloc</span><span class="p">]</span><span class="nf">init</span><span class="p">];</span>
+		<span class="p">});</span>
+		<span class="k">return</span> <span class="n">_shareCompressionPicHandle</span><span class="p">;</span>
+	<span class="p">}</span>
+	
+	
+	<span class="o">-</span> <span class="p">(</span><span class="n">NSData</span><span class="o">*</span> <span class="p">)</span><span class="n">scaleToSize</span><span class="o">:</span><span class="p">(</span><span class="n">CGSize</span><span class="p">)</span><span class="n">size</span>
+               <span class="n">image</span><span class="o">:</span><span class="p">(</span><span class="n">UIImage</span><span class="o">*</span> <span class="p">)</span><span class="n">picture</span>
+               <span class="p">{</span>    
+                   <span class="n">CGFloat</span> <span class="n">width</span> <span class="o">=</span> <span class="n">CGImageGetWidth</span><span class="p">(</span><span class="n">picture</span><span class="p">.</span><span class="n">CGImage</span><span class="p">);</span>
+                   <span class="n">CGFloat</span> <span class="n">height</span> <span class="o">=</span> <span class="n">CGImageGetHeight</span><span class="p">(</span><span class="n">picture</span><span class="p">.</span><span class="n">CGImage</span><span class="p">);</span>
+                   <span class="kt">float</span> <span class="n">verticalRadio</span> <span class="o">=</span> <span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">/</span> <span class="n">height</span><span class="p">;</span>
+                   <span class="kt">float</span> <span class="n">horizontalRadio</span> <span class="o">=</span> <span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">/</span> <span class="n">width</span><span class="p">;</span>
+                   <span class="kt">float</span> <span class="n">radio</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                   <span class="k">if</span><span class="p">(</span><span class="n">verticalRadio</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">horizontalRadio</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                   <span class="n">radio</span> <span class="o">=</span> <span class="n">verticalRadio</span> <span class="o">&gt;</span> <span class="n">horizontalRadio</span> <span class="p">?</span> <span class="n">horizontalRadio</span> <span class="p">:</span> <span class="n">verticalRadio</span><span class="p">;</span>
+<span class="p">}</span><span class="k">else</span><span class="p">{</span>
+<span class="n">radio</span> <span class="o">=</span> <span class="n">verticalRadio</span> <span class="o">&lt;</span> <span class="n">horizontalRadio</span> <span class="p">?</span> <span class="n">verticalRadio</span> <span class="p">:</span> <span class="n">horizontalRadio</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="n">radio</span><span class="p">;</span>
+<span class="n">height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="n">radio</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">xPos</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">yPos</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+
+<span class="p">[</span><span class="n">picture</span> <span class="nf">drawInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">xPos</span><span class="p">,</span> <span class="n">yPos</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)];</span>
+
+<span class="n">UIImage</span><span class="o">*</span> <span class="n">scaledImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+
+<span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+
+<span class="n">NSData</span><span class="o">*</span> <span class="n">scaledImageData</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">scaledImage</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="n">CGFloat</span> <span class="n">compressionRatio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="n">f</span><span class="p">;</span>
+<span class="n">NSData</span><span class="o">*</span> <span class="n">tagerImageData</span> <span class="o">=</span> <span class="n">scaledImageData</span><span class="p">;</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"tagerImageData.length : %lu"</span><span class="p">,(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span><span class="n">tagerImageData</span><span class="p">.</span><span class="n">length</span><span class="p">);</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">tagerImageData</span><span class="p">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="n">stand_size</span> <span class="o">&amp;&amp;</span> <span class="n">compressionRatio</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">compressionRatio</span> <span class="o">&lt;</span> <span class="n">min_compressionRatio</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">([</span><span class="n">_delegate</span> <span class="nf">respondsToSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nf">CompressionPicHandle</span><span class="p">:</span><span class="n">CompressionFailureInfo</span><span class="o">:</span><span class="p">)])</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">_delegate</span> <span class="nf">CompressionPicHandle</span><span class="p">:</span><span class="n">self</span> <span class="nf">CompressionFailureInfo</span><span class="p">:</span><span class="s">@"图片过大"</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="err">@autoreleasepool</span> <span class="p">{</span>
+        <span class="n">NSData</span><span class="o">*</span> <span class="n">newCompressionData</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">scaledImage</span><span class="p">,</span> <span class="n">compressionRatio</span><span class="p">);</span>
+        <span class="n">tagerImageData</span> <span class="o">=</span> <span class="n">newCompressionData</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">compressionRatio</span> <span class="o">=</span> <span class="n">compressionRatio</span> <span class="o">-</span> <span class="mi">0</span><span class="p">.</span><span class="mi">12</span><span class="p">;</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"tagerImageData.length : %lu , compressionRatio : %lf"</span><span class="p">,</span><span class="n">tagerImageData</span><span class="p">.</span><span class="n">length</span><span class="p">,</span><span class="n">compressionRatio</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"compressionRatio : %lf"</span><span class="p">,</span><span class="n">compressionRatio</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="n">tagerImageData</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="o">-</span> <span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="p">)</span><span class="n">imageByScalingAndCroppingForSize</span><span class="o">:</span><span class="p">(</span><span class="n">CGSize</span><span class="p">)</span><span class="n">targetSize</span> <span class="n">image</span><span class="o">:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="n">image</span> <span class="p">{</span>
+<span class="n">UIImage</span> <span class="o">*</span><span class="n">sourceImage</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+<span class="n">UIImage</span> <span class="o">*</span><span class="n">newImage</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+<span class="n">CGSize</span> <span class="n">imageSize</span> <span class="o">=</span> <span class="n">sourceImage</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">width</span> <span class="o">=</span> <span class="n">imageSize</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">height</span> <span class="o">=</span> <span class="n">imageSize</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">targetWidth</span> <span class="o">=</span> <span class="n">targetSize</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">targetHeight</span> <span class="o">=</span> <span class="n">targetSize</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">scaleFactor</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">scaledWidth</span> <span class="o">=</span> <span class="n">targetWidth</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">scaledHeight</span> <span class="o">=</span> <span class="n">targetHeight</span><span class="p">;</span>
+<span class="n">CGPoint</span> <span class="n">thumbnailPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">CGSizeEqualToSize</span><span class="p">(</span><span class="n">imageSize</span><span class="p">,</span> <span class="n">targetSize</span><span class="p">)</span> <span class="o">==</span> <span class="nb">NO</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">CGFloat</span> <span class="n">widthFactor</span> <span class="o">=</span> <span class="n">targetWidth</span> <span class="o">/</span> <span class="n">width</span><span class="p">;</span>
+<span class="n">CGFloat</span> <span class="n">heightFactor</span> <span class="o">=</span> <span class="n">targetHeight</span> <span class="o">/</span> <span class="n">height</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">widthFactor</span> <span class="o">&gt;</span> <span class="n">heightFactor</span><span class="p">){</span>
+<span class="n">scaleFactor</span> <span class="o">=</span> <span class="n">widthFactor</span><span class="p">;</span> <span class="c1">// scale to fit height 
+</span><span class="p">}</span><span class="k">else</span><span class="p">{</span>
+		<span class="n">scaleFactor</span> <span class="o">=</span> <span class="n">heightFactor</span><span class="p">;</span> <span class="c1">// scale to fit width
+</span>    <span class="p">}</span>
+    
+    <span class="n">scaledWidth</span><span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="n">scaleFactor</span><span class="p">;</span>
+    <span class="n">scaledHeight</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="n">scaleFactor</span><span class="p">;</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">widthFactor</span> <span class="o">&gt;</span> <span class="n">heightFactor</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">thumbnailPoint</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">targetHeight</span> <span class="o">-</span> <span class="n">scaledHeight</span><span class="p">)</span> <span class="o">*</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">widthFactor</span> <span class="o">&lt;</span> <span class="n">heightFactor</span><span class="p">){</span>
+        <span class="n">thumbnailPoint</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">targetWidth</span> <span class="o">-</span> <span class="n">scaledWidth</span><span class="p">)</span> <span class="o">*</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">targetSize</span><span class="p">);</span> <span class="c1">// this will crop
+</span><span class="n">CGRect</span> <span class="n">thumbnailRect</span> <span class="o">=</span> <span class="n">CGRectZero</span><span class="p">;</span>
+<span class="n">thumbnailRect</span><span class="p">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">thumbnailPoint</span><span class="p">;</span>
+<span class="n">thumbnailRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="o">=</span> <span class="n">scaledWidth</span><span class="p">;</span>
+<span class="n">thumbnailRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">scaledHeight</span><span class="p">;</span>
+<span class="p">[</span><span class="n">sourceImage</span> <span class="nf">drawInRect</span><span class="p">:</span><span class="n">thumbnailRect</span><span class="p">];</span>
+<span class="n">newImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+<span class="k">if</span><span class="p">(</span><span class="n">newImage</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span>
+<span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+
+<span class="n">NSData</span><span class="o">*</span> <span class="n">scaledImageData</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">newImage</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="n">CGFloat</span> <span class="n">compressionRatio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="n">f</span><span class="p">;</span>
+<span class="n">NSData</span><span class="o">*</span> <span class="n">tagerImageData</span> <span class="o">=</span> <span class="n">scaledImageData</span><span class="p">;</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"tagerImageData.length : %lu"</span><span class="p">,(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span><span class="n">tagerImageData</span><span class="p">.</span><span class="n">length</span><span class="p">);</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">tagerImageData</span><span class="p">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="n">stand_size</span> <span class="o">&amp;&amp;</span> <span class="n">compressionRatio</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">compressionRatio</span> <span class="o">&lt;</span> <span class="n">min_compressionRatio</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">([</span><span class="n">_delegate</span> <span class="nf">respondsToSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nf">CompressionPicHandle</span><span class="p">:</span><span class="n">CompressionFailureInfo</span><span class="o">:</span><span class="p">)])</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">_delegate</span> <span class="nf">CompressionPicHandle</span><span class="p">:</span><span class="n">self</span> <span class="nf">CompressionFailureInfo</span><span class="p">:</span><span class="s">@"图片过大"</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="err">@autoreleasepool</span> <span class="p">{</span>
+        <span class="n">NSData</span><span class="o">*</span> <span class="n">newCompressionData</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">newImage</span><span class="p">,</span> <span class="n">compressionRatio</span><span class="p">);</span>
+        <span class="n">tagerImageData</span> <span class="o">=</span> <span class="n">newCompressionData</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">compressionRatio</span> <span class="o">=</span> <span class="n">compressionRatio</span> <span class="o">-</span> <span class="mi">0</span><span class="p">.</span><span class="mi">12</span><span class="p">;</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"tagerImageData.length : %lu , compressionRatio : %lf"</span><span class="p">,</span><span class="n">tagerImageData</span><span class="p">.</span><span class="n">length</span><span class="p">,</span><span class="n">compressionRatio</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"compressionRatio : %lf"</span><span class="p">,</span><span class="n">compressionRatio</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="n">tagerImageData</span><span class="p">;</span> <span class="p">}</span>
+</code></pre>
+</div>
+
+
+				
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/12-31-2016/iOS%E7%A8%8B%E5%BA%8F%E5%90%AF%E5%8A%A8%E5%8E%9F%E7%90%86-%E4%B8%8B.html" data-toggle="tooltip" data-placement="top" title="iOS - Program start principle（下）">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/01-06-2017/iOS%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8Benum-NS_ENUM-NS_OPTIONS.html" data-toggle="tooltip" data-placement="top" title="iOS - Objectiv-C enum NS_ENUM NS_OPTIONS">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#前端开发" title="前端开发" rel="12">
+                                    前端开发
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#JavaScript" title="JavaScript" rel="4">
+                                    JavaScript
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#生活" title="生活" rel="3">
+                                    生活
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="18">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#工具集" title="工具集" rel="8">
+                                    工具集
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#Bug录" title="Bug录" rel="2">
+                                    Bug录
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#杂货铺" title="杂货铺" rel="4">
+                                    杂货铺
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="https://www.anotherhome.net/">当时只道是寻常</a></li>
+                    
+                        <li><a href="http://su.gallery/">Su</a></li>
+                    
+                        <li><a href="http://www.yinhaomin.com/">殷浩民的博客</a></li>
+                    
+                        <li><a href="http://mida.re/">乱序</a></li>
+                    
+                        <li><a href="http://qianduan.guru/">前端外刊评论</a></li>
+                    
+                        <li><a href="http://hmqk1995.github.io">Luke 的自留地</a></li>
+                    
+                        <li><a href="http://ebnbin.com/">Ebn's Blog</a></li>
+                    
+                        <li><a href="http://blog.smdcn.net">SmdCn's Blog</a></li>
+                    
+                        <li><a href="http://dhong.co">DHong Say</a></li>
+                    
+                        <li><a href="http://www.jianshu.com/u/55c8fdc3c6e7">曲天白的简书</a></li>
+                    
+                        <li><a href="https://prprpr.xyz/">qwq的一篇天地</a></li>
+                    
+                        <li><a href="http://ykksmile.top/">Ykk's blog'</a></li>
+                    
+                        <li><a href="http://u-hey.com/">UHEY's BLOG'</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "oragekk";
+    var disqus_identifier = "/12-31-2016/图片上传压缩算法";
+    var disqus_url = "https://oragekk.github.io/12-31-2016/%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95.html";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    <li>
+                        <a target="_blank" href="http://www.jianshu.com/users/752cf0a6b9b4/latest_articles">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">简</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/hkoragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Oragekk Blog 2017
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=oragekk&repo=oragekk.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+<script src="/js/jquery.iMissYou.js "></script>
+<script type="text/javascript">
+    
+    $(function(){
+    
+        $.iMissYou({
+            //当前网页被隐藏的时候要显示的标题
+            title:"~~(>_<)~~ I Miss You.",
+            //是否要切换icon， enabled布尔值设定是否开启，src用来设定使用的icon
+            favicon: {
+                enabled: true,
+                src:'http://oragekk.me/img/iMissYouFavicon.ico'
+            }
+        });
+    
+    });
+    
+</script>
+<!-- Service Worker -->
+
+<script type="text/javascript">
+    if(navigator.serviceWorker){
+        // For security reasons, a service worker can only control the pages that are in the same directory level or below it. That's why we put sw.js at ROOT level.
+        navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {console.log('Service Worker Registered. ', registration)})
+            .catch((error) => {console.log('ServiceWorker registration failed: ', error)})
+    }
+</script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+<!-- 百度自动推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-86818126-1';
+    var _gaDomain = 'oragekk.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+<!--</div>-->
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+
+<!-- Migrate from head to bottom, no longer block render and still work -->
+<!-- js依赖引入区 -->
+<script type="text/javascript">
+function browserRedirect() {
+var sUserAgent = navigator.userAgent.toLowerCase();
+var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+var bIsAndroid = sUserAgent.match(/android/i) == "android";
+var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+// document.writeln("您的浏览设备为：");
+if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+
+// alert("手机浏览！");
+
+
+} else {
+
+// alert("PC浏览！");
+/// 一下两行代码为点击背景彩虹条和鼠标特效
+// document.write("<script type='text/javascript' size='150' alpha='0.8' zIndex='-10' src='../js/dist/ribbon.js'><\/script>");
+// document.write("<script type='text/javascript' color='0,188,212' opacity='0.7' zIndex='-2' count='99' src='http://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js'><\/script>");
+// 粒子特效更换为maxjia.js---http://cdn.maxjia.com/js/particles.min.js
+// document.write("<script src='http://cdn.maxjia.com/js/particles.min.js'><\/script>");
+}
+}
+browserRedirect();
+</script>
+<script type="text/javascript">
+particlesJS('particles-js',
+  {
+    "particles": {
+      "number": {
+        "value": 110,
+        "density": {
+          "enable": true,
+          "value_area": 800
+        }
+      },
+      "color": {
+        "value": "#00BFA5"//#00BFA5
+      },
+      "shape": {
+        "type": "circle",
+        "stroke": {
+          "width": 0,
+          "color": "#000000"
+        },
+        "polygon": {
+          "nb_sides": 5
+        },
+        "image": {
+          "src": "img/github.svg",
+          "width": 100,
+          "height": 100
+        }
+      },
+      "opacity": {
+        "value": 0.5,
+        "random": false,
+        "anim": {
+          "enable": false,
+          "speed": 1,
+          "opacity_min": 0.1,
+          "sync": false
+        }
+      },
+      "size": {
+        "value": 1,
+        "random": true,
+        "anim": {
+          "enable": false,
+          "speed": 20,
+          "size_min": 0.1,
+          "sync": false
+        }
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 40,
+        "color": "#263238",
+        "opacity": 1,
+        "width": 1
+      },
+      "move": {
+        "enable": true,
+        "speed": 3,
+        "direction": "none",
+        "random": false,
+        "straight": false,
+        "out_mode": "out",
+        "attract": {
+          "enable": false,
+          "rotateX": 600,
+          "rotateY": 1200
+        }
+      }
+    },
+    "interactivity": {
+      "detect_on": "window",//canvas
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "grab"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 120,
+          "line_linked": {
+            "opacity": 1
+          }
+        },
+        "bubble": {
+          "distance": 400,
+          "size": 40,
+          "duration": 2,
+          "opacity": 8,
+          "speed": 3
+        },
+        "repulse": {
+          "distance": 300
+        },
+        "push": {
+          "particles_nb": 4
+        },
+        "remove": {
+          "particles_nb": 2
+        }
+      }
+    },
+    "retina_detect": true,
+    "config_demo": {
+      "hide_card": false,
+      "background_color": "#b61924",
+      "background_image": "",
+      "background_position": "50% 50%",
+      "background_repeat": "no-repeat",
+      "background_size": "cover"
+    }
+  }
+
+);
+</script>
+</body>
+</html>
