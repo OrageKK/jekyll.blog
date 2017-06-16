@@ -28,6 +28,7 @@ tags:
 
 >方法一:网上说使用此方法，电话结束后进入联系人列表，测试结果为：正常，电话结束后返回程序 
 
+``` objc
     +(void)callPhoneOne:(NSString *)phoneNum{
     UIApplication *application = [UIApplication sharedApplication];
     /*--------拨号方法一-----------*/
@@ -35,10 +36,11 @@ tags:
     NSString *num1 = [NSString stringWithFormat:@"tel://%@",phoneNum];
     [application openURL:[NSURL URLWithString:num1] options:@{} completionHandler:^(BOOL success) {}];
     }
-    
+```    
 
 >方法二：测试结果为先弹窗后拨打，呼叫结束后返回程序，是否可以通过审核无法确认    
     
+``` objc
     +(void)callPhoneTwo:(NSString *)phoneNum{
     UIApplication *application = [UIApplication sharedApplication];
         /*--------拨号方法二-----------*/
@@ -47,10 +49,13 @@ tags:
         [application openURL:[NSURL URLWithString:num2] options:@{} completionHandler:^(BOOL success) {}];
     
     }
+```
 
 >方法三：调用UIWebView进行呼叫功能，测试结果为：弹窗速度稍慢，电话挂掉之后返回程序
+
     
-     // 要在出发呼叫功能前不被release需要强引用
+``` objc    
+    // 要在出发呼叫功能前不被release需要强引用
     @property (nonatomic,strong) UIWebView *phoneCallWebView;   
     #pragma mark - 拨号方法三，会稍微慢于前两种方法
     - (void)callPhoneThree:(NSString *)phoneNum{
@@ -61,8 +66,8 @@ tags:
         _phoneCallWebView = [[UIWebView alloc] initWithFrame:CGRectZero];// 这个webView只是一个后台的容易 不需要add到页面上来  效果跟方法二一样 但是这个方法是合法的
     }
     [_phoneCallWebView loadRequest:[NSURLRequest requestWithURL:phoneURL]];
-    }
-    
+   }
+```
     
  * 总结来说除了第二种不知是否可以通过审核，其余方法均可实现呼叫并返回程序功能。
  
