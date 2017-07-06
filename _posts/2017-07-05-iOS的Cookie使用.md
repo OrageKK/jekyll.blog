@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      "iOS Cookie "
+title:      "iOS Cookie的配置及使用"
 subtitle:   "iOS，前端开发，杂货铺"
 date:       2017-07-05
 author:     "oragekk"
-header-img: "post-bg-ios-demo-testcallphone.jpg"
+header-img: "img/post-bg-ios-demo-testcallphone.jpg"
 tags:
 
     - iOS
