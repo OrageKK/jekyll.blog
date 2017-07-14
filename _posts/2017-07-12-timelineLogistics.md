@@ -26,8 +26,7 @@ tags:
  	- 使用了YYkit中的YYLable进行富文本电话号码点击拨打电话 
  	
  * 初始化数组
- * 
- 	
+ 
  	``` objc
  NSArray *titleArr = [NSArray arrayWithObjects:
                          @"[北京通州区杨庄公司锦园服务部]快件	已被27号楼e站代签收",
@@ -36,7 +35,7 @@ tags:
                          @"[北京分拨中心]在分拨中心进行卸车扫	描",
                          @"[浙江杭州分拨中心]在分拨中心进行称	重扫描",
                          @"[浙江杭州下城区三里亭公司]进行揽件	扫描",nil];
-   NSArray *timeArr = [NSArray arrayWithObjects:
+NSArray *timeArr = [NSArray arrayWithObjects:
                         @"2017-07-04 12:59:00",
                         @"2017-07-03 10:59:00",
                         @"2017-07-03 08:22:00",
