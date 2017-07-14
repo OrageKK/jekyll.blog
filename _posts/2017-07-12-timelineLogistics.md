@@ -20,11 +20,13 @@ tags:
 > 使用正则表达式判断字符是否为电话号码，用YYLable进行富文本电话拨打
 
 ## 使用
- - 引入Masonry,YYkit库
+
+ * 引入Masonry,YYkit库
  	- 使用了MAsonry进行布局
  	- 使用了YYkit中的YYLable进行富文本电话号码点击拨打电话 
- - 初始化数组
- - 
+ 	
+ * 初始化数组
+  
  	``` objc
  	NSArray *titleArr = [NSArray arrayWithObjects:
                          @"[北京通州区杨庄公司锦园服务部]快件	已被27号楼e站代签收",
@@ -40,12 +42,11 @@ tags:
                         @"2017-07-03 03:34:22",
                         @"2017-07-02 12:59:00",
                         @"2017-07-02 08:10:00",nil];
-  ```
+                        ```
                         
- - 转为模型
- -
+ * 转为模型
+ 
 	``` objc
-	
 	for (NSInteger i = titleArr.count-1;i>=0 ; i--) 
 	{
    		OKLogisticModel * model = [[OKLogisticModel alloc]init];
@@ -54,8 +55,8 @@ tags:
         [self.dataArry addObject:model];
    }
  	```  	
- - 初始化控制器
- - 
+ * 初始化控制器
+  
 	``` objc
  OKLogisticsView * logis = [[OKLogisticsView alloc]initWithDatas:self.dataArry];
     // 给headView赋值
