@@ -46,11 +46,11 @@ tags:
  
 	```objc
  for (NSInteger i = titleArr.count-1;i>=0 ; i--) {
-        OKLogisticModel * model = [[OKLogisticModel alloc]init];
+   		OKLogisticModel * model = [[OKLogisticModel alloc]init];
         model.dsc = [titleArr objectAtIndex:i];
         model.date = [timeArr objectAtIndex:i];
         [self.dataArry addObject:model];
-    }
+   }
  	```  	
  - 初始化控制器
   
