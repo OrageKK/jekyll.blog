@@ -26,7 +26,7 @@ tags:
  - 初始化数组
  - 
  ```objc
- 	NSArray *titleArr = [NSArray arrayWithObjects:
+ NSArray *titleArr = [NSArray arrayWithObjects:
                          @"[北京通州区杨庄公司锦园服务部]快件已被27号楼e站代签收",
                          @"[北京通州区杨庄公司]到达目的地网店，快件将很快进行派送" ,
                          @"[北京通州区杨庄公司]进行派件扫描；派送业务员：周志军；联系电话：13522464946",
@@ -43,9 +43,9 @@ tags:
   ```
                         
  - 转为模型
-
+ 
 	```objc
- 	for (NSInteger i = titleArr.count-1;i>=0 ; i--) {
+ for (NSInteger i = titleArr.count-1;i>=0 ; i--) {
         OKLogisticModel * model = [[OKLogisticModel alloc]init];
         model.dsc = [titleArr objectAtIndex:i];
         model.date = [timeArr objectAtIndex:i];
@@ -55,7 +55,7 @@ tags:
  - 初始化控制器
   
 	```objc
- 	OKLogisticsView * logis = [[OKLogisticsView alloc]initWithDatas:self.dataArry];
+ OKLogisticsView * logis = [[OKLogisticsView alloc]initWithDatas:self.dataArry];
     // 给headView赋值
     logis.wltype=@"已签收";
     logis.number = @"3908723967437";
