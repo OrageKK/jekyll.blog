@@ -26,7 +26,7 @@ tags:
  	- 使用了YYkit中的YYLable进行富文本电话号码点击拨打电话 
  	
  * 初始化数组
-  
+ * 
  	``` objc
  NSArray *titleArr = [NSArray arrayWithObjects:
                          @"[北京通州区杨庄公司锦园服务部]快件	已被27号楼e站代签收",
