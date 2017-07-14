@@ -28,7 +28,7 @@ tags:
  * 初始化数组
   
  	``` objc
- 	NSArray *titleArr = [NSArray arrayWithObjects:
+ NSArray *titleArr = [NSArray arrayWithObjects:
                          @"[北京通州区杨庄公司锦园服务部]快件	已被27号楼e站代签收",
                          @"[北京通州区杨庄公司]到达目的地网	店，快件将很快进行派送" ,
                          @"[北京通州区杨庄公司]进行派件扫描；	派送业务员：周志军；联系电话：13522464946",
