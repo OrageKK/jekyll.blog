@@ -25,7 +25,7 @@ tags:
  	- 使用了YYkit中的YYLable进行富文本电话号码点击拨打电话 
  - 初始化数组
   
- 	```objc
+ 	``` objc
  	NSArray *titleArr = [NSArray arrayWithObjects:
                          @"[北京通州区杨庄公司锦园服务部]快件	已被27号楼e站代签收",
                          @"[北京通州区杨庄公司]到达目的地网	店，快件将很快进行派送" ,
@@ -44,7 +44,7 @@ tags:
                         
  - 转为模型
  
-	```objc
+	``` objc
 	
 	for (NSInteger i = titleArr.count-1;i>=0 ; i--) 
 	{
@@ -56,7 +56,7 @@ tags:
  	```  	
  - 初始化控制器
   
-	```objc
+	``` objc
  OKLogisticsView * logis = [[OKLogisticsView alloc]initWithDatas:self.dataArry];
     // 给headView赋值
     logis.wltype=@"已签收";
