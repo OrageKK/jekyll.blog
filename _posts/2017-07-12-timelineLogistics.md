@@ -42,19 +42,20 @@ tags:
                         @"2017-07-03 03:34:22",
                         @"2017-07-02 12:59:00",
                         @"2017-07-02 08:10:00",nil];
-                        ```
+	```
                         
  * 转为模型
  
 	``` objc
-	for (NSInteger i = titleArr.count-1;i>=0 ; i--) 
-	{
-   		OKLogisticModel * model = [[OKLogisticModel alloc]init];
-        model.dsc = [titleArr objectAtIndex:i];
-        model.date = [timeArr objectAtIndex:i];
-        [self.dataArry addObject:model];
-   }
- 	```  	
+ for (NSInteger i = titleArr.count-1;i>=0 ; i--) 
+ { 
+ 	OKLogisticModel * model = [[OKLogisticModel alloc]init];
+ 	model.dsc = [titleArr objectAtIndex:i];
+ 	model.date = [timeArr objectAtIndex:i];
+ 	[self.dataArry addObject:model];
+ 	}
+    ``` 
+    	
  * 初始化控制器
   
 	``` objc
