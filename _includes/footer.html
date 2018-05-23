@@ -108,14 +108,21 @@
 <script type="text/javascript">
     
     $(function(){
-    
+        var curProtocol = window.location.protocol.split(':')[0];
+        var icoSrc;
+        if (curProtocol === 'https') {
+            icoSrc = 'https://oragekk.me/img/iMissYouFavicon.ico';        
+        }
+        else {
+            icoSrc = 'http://oragekk.me/img/iMissYouFavicon.ico';
+        }
         $.iMissYou({
             //当前网页被隐藏的时候要显示的标题
             title:"~~(>_<)~~ I Miss You.",
             //是否要切换icon， enabled布尔值设定是否开启，src用来设定使用的icon
             favicon: {
                 enabled: true,
-                src:'https://oragekk.me/img/iMissYouFavicon.ico'
+                src:icoSrc
             }
         });
     
