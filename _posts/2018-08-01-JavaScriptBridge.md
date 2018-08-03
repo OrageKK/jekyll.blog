@@ -12,6 +12,10 @@ tags:
     - 杂货铺 
 ---
 > 最近一直在忙，今天抽空写一下H5和Native的交互
+
+
+
+
 ## 一、选择
 * 项目本身webview使用的是WKWebview，其实WKWebview自带的messageHandle也可以满足此需求
 * JSContext,源自于JavaScriptCore框架中的东西，最后不使用此方案源于一下几点
@@ -35,6 +39,7 @@ tags:
 
 ``` objc
 #pragma mark - 桥接
+
 - (void)InitializeWebViewJavascriptBridge {
     // 注册桥接
     self.bridge = [SWHybridManager setJavaScriptBridgeWithWebView:self.webView controller:self];
