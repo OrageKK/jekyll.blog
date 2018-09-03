@@ -1,239 +1,173 @@
-/* to make lines scroll instead of wrap */
-/* from http://stackoverflow.com/a/23393920 */
-
-.highlight pre code * {
-  white-space: nowrap;    // this sets all children inside to nowrap
-}
-
-.highlight pre {
-  overflow-x: auto;       // this sets the scrolling in x
-}
-
-.highlight pre code {
-  white-space: pre;       // forces <code> to respect <pre> formatting
-}
-
-
-/*
- * GitHub style for Pygments syntax highlighter, for use with Jekyll
- * Courtesy of GitHub.com
- */
-
 .highlight table td { padding: 5px; }
 .highlight table pre { margin: 0; }
-.highlight .gh {
-  color: #999999;
+.highlight {
+  color: #faf6e4;
+  background-color: #122b3b;
 }
-.highlight .sr {
-  color: #f6aa11;
-}
-.highlight .go {
-  color: #888888;
+.highlight .gl {
+  color: #dee5e7;
+  background-color: #4e5d62;
 }
 .highlight .gp {
-  color: #555555;
+  color: #a8e1fe;
+  font-weight: bold;
 }
-.highlight .gs {
-}
-.highlight .gu {
-  color: #aaaaaa;
-}
-.highlight .nb {
-  color: #f6aa11;
-}
-.highlight .cm {
-  color: #75715e;
+.highlight .c, .highlight .cd, .highlight .cm, .highlight .c1, .highlight .cs {
+  color: #6c8b9f;
+  font-style: italic;
 }
 .highlight .cp {
-  color: #75715e;
-}
-.highlight .c1 {
-  color: #75715e;
-}
-.highlight .cs {
-  color: #75715e;
-}
-.highlight .c, .highlight .cd {
-  color: #75715e;
+  color: #b2fd6d;
+  font-weight: bold;
+  font-style: italic;
 }
 .highlight .err {
-  color: #960050;
+  color: #fefeec;
+  background-color: #cc0000;
 }
 .highlight .gr {
-  color: #960050;
+  color: #cc0000;
+  font-weight: bold;
+  font-style: italic;
 }
-.highlight .gt {
-  color: #960050;
+.highlight .k, .highlight .kd, .highlight .kv {
+  color: #f6dd62;
+  font-weight: bold;
+}
+.highlight .o, .highlight .ow {
+  color: #4df4ff;
+  font-weight: bold;
+}
+.highlight .p, .highlight .pi {
+  color: #4df4ff;
 }
 .highlight .gd {
-  color: #49483e;
+  color: #cc0000;
 }
 .highlight .gi {
-  color: #49483e;
+  color: #b2fd6d;
 }
 .highlight .ge {
-  color: #49483e;
+  font-style: italic;
+}
+.highlight .gs {
+  font-weight: bold;
+}
+.highlight .gt {
+  color: #dee5e7;
+  background-color: #4e5d62;
 }
 .highlight .kc {
-  color: #66d9ef;
-}
-.highlight .kd {
-  color: #66d9ef;
-}
-.highlight .kr {
-  color: #66d9ef;
-}
-.highlight .no {
-  color: #66d9ef;
-}
-.highlight .kt {
-  color: #66d9ef;
-}
-.highlight .mf {
-  color: #ae81ff;
-}
-.highlight .mh {
-  color: #ae81ff;
-}
-.highlight .il {
-  color: #ae81ff;
-}
-.highlight .mi {
-  color: #ae81ff;
-}
-.highlight .mo {
-  color: #ae81ff;
-}
-.highlight .m, .highlight .mb, .highlight .mx {
-  color: #ae81ff;
-}
-.highlight .sc {
-  color: #ae81ff;
-}
-.highlight .se {
-  color: #ae81ff;
-}
-.highlight .ss {
-  color: #ae81ff;
-}
-.highlight .sd {
-  color: #e6db74;
-}
-.highlight .s2 {
-  color: #e6db74;
-}
-.highlight .sb {
-  color: #e6db74;
-}
-.highlight .sh {
-  color: #e6db74;
-}
-.highlight .si {
-  color: #e6db74;
-}
-.highlight .sx {
-  color: #e6db74;
-}
-.highlight .s1 {
-  color: #e6db74;
-}
-.highlight .s {
-  color: #e6db74;
-}
-.highlight .na {
-  color: #a6e22e;
-}
-.highlight .nc {
-  color: #a6e22e;
-}
-.highlight .nd {
-  color: #a6e22e;
-}
-.highlight .ne {
-  color: #a6e22e;
-}
-.highlight .nf {
-  color: #a6e22e;
-}
-.highlight .vc {
-  color: #ffffff;
-}
-.highlight .nn {
-  color: #70827D;
-}
-.highlight .nl {
-  color: #ffffff;
-}
-.highlight .ni {
-  color: #ffffff;
-}
-.highlight .bp {
-  color: #ffffff;
-}
-.highlight .vg {
-  color: #ffffff;
-}
-.highlight .vi {
-  color: #ffffff;
-}
-.highlight .nv {
-  color: #ffffff;
-}
-.highlight .w {
-  color: #ffffff;
-}
-.highlight {
-  color: #ffffff;
-}
-.highlight .n, .highlight .py, .highlight .nx {
-  color: #70827D;
-}
-.highlight .ow {
-  color: #f92672;
-}
-.highlight .nt {
-  color: #f92672;
-}
-.highlight .k, .highlight .kv {
-  color: #f92672;
+  color: #f696db;
+  font-weight: bold;
 }
 .highlight .kn {
-  color: #f92672;
+  color: #ffb000;
+  font-weight: bold;
 }
 .highlight .kp {
-  color: #f92672;
+  color: #ffb000;
+  font-weight: bold;
 }
-.highlight .o {
-  color: #f92672;
+.highlight .kr {
+  color: #ffb000;
+  font-weight: bold;
 }
-div[class="highlight"] > pre > code[class*="language-"] {
-  background:black;
-  color:#f8f8f2;
+.highlight .gh {
+  color: #ffb000;
+  font-weight: bold;
 }
-div[class="highlight"] > pre {
-  background:black;
+.highlight .gu {
+  color: #ffb000;
+  font-weight: bold;
 }
-figure[class="highlight"] > pre > code[class*="language-"] {
-  text-align:left;
-  background:black;
-  color:#f8f8f2;
+.highlight .kt {
+  color: #b2fd6d;
+  font-weight: bold;
 }
-figure[class="highlight"] > pre > code[class*="language-"] td > pre{
-  text-align:left;
-  background:black;
-  color:#f8f8f2;
+.highlight .no {
+  color: #b2fd6d;
+  font-weight: bold;
 }
-figure[class="highlight"] > pre {
-  text-align:left;
-  background:black;
+.highlight .nc {
+  color: #b2fd6d;
+  font-weight: bold;
 }
-div[class="highlighter-rouge"] > pre[class="highlight"] > code{
-  background:black;
-  color:#f8f8f2;
+.highlight .nd {
+  color: #b2fd6d;
+  font-weight: bold;
 }
-div[class="highlighter-rouge"] > pre[class="highlight"] {
-  background:black;
+.highlight .nn {
+  color: #b2fd6d;
+  font-weight: bold;
 }
-.lineno {color: #f8f8f2 } /*Number of line*/
-pre[class='highlight'] {background-color:#052B35
-;}
+.highlight .bp {
+  color: #b2fd6d;
+  font-weight: bold;
+}
+.highlight .ne {
+  color: #b2fd6d;
+  font-weight: bold;
+}
+.highlight .nl {
+  color: #ffb000;
+  font-weight: bold;
+}
+.highlight .nt {
+  color: #ffb000;
+  font-weight: bold;
+}
+.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mb, .highlight .mx {
+  color: #f696db;
+  font-weight: bold;
+}
+.highlight .ld {
+  color: #f696db;
+  font-weight: bold;
+}
+.highlight .ss {
+  color: #f696db;
+  font-weight: bold;
+}
+.highlight .s, .highlight .sb, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .sr, .highlight .s1 {
+  color: #fff0a6;
+  font-weight: bold;
+}
+.highlight .se {
+  color: #4df4ff;
+  font-weight: bold;
+}
+.highlight .sc {
+  color: #4df4ff;
+  font-weight: bold;
+}
+.highlight .si {
+  color: #4df4ff;
+  font-weight: bold;
+}
+.highlight .nb {
+  font-weight: bold;
+}
+.highlight .ni {
+  color: #999999;
+  font-weight: bold;
+}
+.highlight .w {
+  color: #BBBBBB;
+}
+.highlight .go {
+  color: #BBBBBB;
+}
+.highlight .nf {
+  color: #a8e1fe;
+}
+.highlight .py {
+  color: #a8e1fe;
+}
+.highlight .na {
+  color: #a8e1fe;
+}
+.highlight .nv, .highlight .vc, .highlight .vg, .highlight .vi {
+  color: #a8e1fe;
+  font-weight: bold;
+}
