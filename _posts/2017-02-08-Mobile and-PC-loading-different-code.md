@@ -5,6 +5,7 @@ subtitle:   "JavaScript，前端开发"
 date:       2017-02-07
 author:     "oragekk"
 header-img: "img/post-bg-js-version.jpg"
+catalog: true
 tags:
 
     - JavaScript

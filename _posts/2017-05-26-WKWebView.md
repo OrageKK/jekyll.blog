@@ -5,6 +5,7 @@ subtitle:   "iOS，前端开发，杂货铺"
 date:       2017-05-26 15:47:40
 author:     "oragekk"
 header-img: "img/post-bg-ios-demo-testcallphone.jpg"
+catalog: true
 tags:
 
     - iOS

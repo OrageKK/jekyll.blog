@@ -5,6 +5,7 @@ subtitle:   "基础知识，iOS开发，归纳笔记"
 date:       2017-01-06 11:19:16
 author:     "oragekk"
 header-img: "img/post-bg-ios-demo-tree.jpg"
+catalog: true
 tags:
 
     - iOS

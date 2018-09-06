@@ -5,6 +5,7 @@ subtitle:   "iOS，前端开发，杂货铺"
 date:       2017-08-30
 author:     "oragekk"
 header-img: "img/post-bg-2016-11-3.jpg"
+catalog: true
 tags:
 
     - iOS

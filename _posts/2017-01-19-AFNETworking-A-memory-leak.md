@@ -5,6 +5,7 @@ subtitle:   "Bug，iOS"
 date:       2017-01-19
 author:     "oragekk"
 header-img: "img/post-bg-unix-linux.jpg"
+catalog: true
 tags:
 
     - iOS

@@ -5,6 +5,7 @@ subtitle:   "多线程，iOS开发，Demo 归纳笔记"
 date:       2016-12-26 13:39:59
 author:     "oragekk"
 header-img: "img/post-bg-ios-demo-testcallphone.jpg"
+catalog: true
 tags:
 
     - iOS

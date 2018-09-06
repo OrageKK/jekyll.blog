@@ -5,6 +5,7 @@ subtitle:   "CommoniOS，RequireiOS, 归纳笔记"
 date:       2016-11-04 18:11:56
 author:     "Oragekk"
 header-img: "img/post-bg-js-module.jpg"
+catalog: true
 tags:
 
     - 前端开发

@@ -5,6 +5,7 @@ subtitle:   " \"我们有很多的声音而没有真理，我们来自一个良�
 date:       2016-11-03 12:00:00
 author:     "Oragekk"
 header-img: "img/post-bg-2015.jpg"
+catalog: true
 tags:
     - 生活
 ---

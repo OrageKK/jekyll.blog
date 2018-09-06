@@ -5,6 +5,7 @@ subtitle:   "iOS，Bug录"
 date:       2017-02-13
 author:     "oragekk"
 header-img: "img/post-bg-ios-demo-testcallphone.jpg"
+catalog: true
 tags:
 
     - iOS
