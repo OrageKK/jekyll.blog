@@ -89,6 +89,10 @@ service-worker: true
 # Friends 
 friends: [
     {
+        title: "一之笔",
+        href: "https://yizibi.github.io/"
+    },
+    {
         title: "iOS Caff",
         href: "https://ioscaff.com/"
     },{
