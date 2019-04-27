@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "WebViewJavascriptBridge"
-subtitle:   "iOS，前端开发，杂货铺"
+subtitle:   "Native & H5 The messaging"
 date:       2018-08-03 09:48:33
 author:     "oragekk"
 header-img: "img/post-bg-ios-demo-testcallphone.jpg"
