@@ -1,0 +1,22 @@
+I"<blockquote>
+  <p>由于多说评论系统将于6月1日下线，所以准备迁移至<a href="https://disqus.com/">disqus</a>，相比较的话对于国内环境还是多说好用一点，毕竟加载快，支持各大媒体的分享，也不用小伙伴们翻墙；而disqus分享也只支持Facebook和twitter。。PS:貌似现在又被墙了，以后有时间再换吧，目前就先这样，国内据说<a href="http://changyan.kuaizhan.com/static/help/">畅言</a>还不错</p>
+</blockquote>
+
+<h2 id="迁移过程">迁移过程</h2>
+
+<h3 id="1首先为了不丢失原有评论导出多说评论">1.首先为了不丢失原有评论，导出多说评论</h3>
+<p><img src="http://i2.muimg.com/567571/f0d7b62ff410decf.png" alt="" /></p>
+
+<h3 id="2文件转换">2.文件转换</h3>
+
+<ul>
+  <li>由于disqus不支持多说导出的.json文件，所以需要进行转换为xml文件，此处使用github上的轮子<a href="https://github.com/JamesPan/duoshuo-migrator">JamesPan/duoshuo-migrator</a></li>
+  <li>使用步骤
+ 	1. 下载<a href="https://github.com/JamesPan/duoshuo-migrator/blob/master/duoshuo-migrator.py?raw=true">duoshuo-migrator.py</a>并安装依赖
+ 	<img src="http://i2.muimg.com/567571/f98e1281fec1cdd7.png" alt="" />
+ 	2. 执行 <code class="highlighter-rouge">python duoshuo-migrator.py -i ~/Desktop/export.json  -o disqus.xml</code>命令<br />
+ 	<img src="http://i2.muimg.com/567571/8e27bcddc31c29b2.png" alt="" />
+ 	3. 将转换完成文件导入
+ 	<img src="http://i2.muimg.com/567571/213761ad8cf62886.png" alt="" /></li>
+</ul>
+:ET

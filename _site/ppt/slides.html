@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="oragekk">
+  <meta name="dcterms.date" content="2018-09-06">
+  <title>markdown + Pandoc 打造WEB PPT</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">markdown + Pandoc 打造WEB PPT</h1>
+  <p class="author">oragekk</p>
+  <p class="date">September 06, 2018</p>
+</section>
+
+<section><section id="准备工作" class="title-slide slide level1"><h1>准备工作</h1></section><section id="pandoc" class="slide level2">
+<h2>Pandoc</h2>
+<ul>
+<li>安装<a href="http://johnmacfarlane.net/pandoc/installing.html">Pandoc</a></li>
+<li>mac 系统下可使用homebrew <strong>brew install pandoc</strong></li>
+</ul>
+</section><section id="书写工作" class="slide level2">
+<h2>书写工作</h2>
+<ul>
+<li>使用Pandoc可以进行各种转换</li>
+</ul>
+</section><section id="此处使用markdown" class="slide level2">
+<h2>此处使用markdown</h2>
+<ul>
+<li><div class="sourceCode" id="cb1"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1-1" data-line-number="1">% Nonsense Stuff</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">% John Doe</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">% March 22, 2005</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="fu"># In the morning</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="fu">## Getting up</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">- <span class="fl">Turn off alarm</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="fl">- Get out of bed</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="fu">## Breakfast</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">- <span class="fl">Eat eggs</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="fl">- Drink coffee</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="fu"># In the evening</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="fu">## Dinner</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">- <span class="fl">Eat spaghetti</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="fl">- Drink wine</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">------------------</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="al">![picture of spaghetti](images/spaghetti.jpg)</span></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="fu">## Going to sleep</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30">- <span class="fl">Get in bed</span></a>
+<a class="sourceLine" id="cb1-31" data-line-number="31"><span class="fl">- Count sheep</span></a></code></pre></div></li>
+</ul>
+</section></section>
+<section><section id="定义样式" class="title-slide slide level1"><h1>定义样式</h1></section><section id="框架支持" class="slide level2">
+<h2>框架支持</h2>
+<ul>
+<li><a href="https://github.com/paulrouget/dzslides">DZSlides</a></li>
+<li><a href="http://www.w3.org/Talks/Tools/Slidy2/">Slidy</a></li>
+<li><a href="http://meyerweb.com/eric/tools/s5/">S5</a></li>
+<li><a href="http://goessner.net/articles/slideous/slideous.html">Slideous</a></li>
+<li><a href="http://lab.hakim.se/reveal-js">reveal.js</a></li>
+</ul>
+</section><section class="slide level2">
+
+<h3 id="reveal.js的使用"><a href="http://lab.hakim.se/reveal-js">reveal.js</a>的使用</h3>
+<ul>
+<li><p>首先需要从GitHub上获取<a href="https://github.com/hakimel/reveal.js" class="uri">https://github.com/hakimel/reveal.js</a>，将<code>reveal.js</code>同名的文件夹放在幻灯片所在目录下即可：</p></li>
+<li><pre class="shell"><code>git clone https://github.com/hakimel/reveal.js</code></pre></li>
+<li><p>渲染幻灯片</p>
+<pre class="shell"><code>pandoc slides.md -o slides.html -t revealjs -s</code></pre></li>
+</ul>
+</section><section class="slide level2">
+
+<ul>
+<li><p>主题选择</p>
+<ul>
+<li><p><em>default</em>：（默认）深灰色背景，白色文字</p></li>
+<li><p><em>beige</em>：米色背景，深色文字</p></li>
+<li><p><em>sky</em>：天蓝色背景，白色细文字</p></li>
+<li><p><em>night</em>：黑色背景，白色粗文字</p></li>
+<li><p><em>serif</em>：浅色背景，灰色衬线文字</p></li>
+<li><p><em>simple</em>：白色背景，黑色文字</p></li>
+<li><p><em>solarized</em>：奶油色背景，深青色文字</p>
+<pre class="shell"><code>$ pandoc slides.md -o slides.html -t revealjs -s -V theme=beige</code></pre></li>
+</ul></li>
+</ul>
+</section><section id="规则" class="slide level2">
+<h2>规则</h2>
+<ul>
+<li><p><strong>———————————— </strong>用于强制生成新页</p></li>
+<li><p>生成幻灯片时加入<code>-i</code>选项，用于控制列表的显示效果（逐条渐入）。</p>
+<pre class="shell"><code>$ pandoc slides.md -o slides.html -t slidy -s -i</code></pre></li>
+</ul>
+</section><section class="slide level2">
+
+</section></section>
+<section><section id="thank-you" class="title-slide slide level1"><h1>Thank You!</h1></section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

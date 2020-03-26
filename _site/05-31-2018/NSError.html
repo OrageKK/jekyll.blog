@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="关于开发与设计、黑客与画家 | 黄坤，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Oragekk黄坤 的个人博客，与你一起发现更大的世界。">
+    <meta name="keywords"  content="黄坤, Oragekk, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, iOS, Lynn">
+    <meta name="theme-color" content="#000000">
+    
+    <title>NSError - Oragekk's Blog - 心之所向，身亦至之</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="http://localhost:4000/05-31-2018/NSError.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+    <!--<link rel="stylesheet" href="/css/pygments.css">-->
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Oragekk Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                        <!--
+                        <div class="list-group">
+                        <a class="list-group-item" href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; HOME</a>
+                        </div>
+                        -->
+                    </li>
+                    
+                    <li>
+                        <a href="/about.html">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags.html">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+  <!--<div id="particles-js">-->
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-redman.jpeg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-redman.jpeg')
+    }
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                        <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
+                        
+                    </div>
+                    <h1>NSError</h1>
+                    
+                    
+                    <h2 class="subheading">iOS，前端开发</h2>
+                    
+                    <span class="meta">Posted by oragekk on May 31, 2018</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <!-- Multi-Lingual -->
+                
+
+				<blockquote>
+  <p>前言</p>
+
+  <p>整理一下在iOS开发中NSError的错误代码</p>
+</blockquote>
+
+<h2 id="nserror">NSError</h2>
+
+<p>NSError是系统错误信息类</p>
+
+<p>初始化方法两个</p>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">// domain 不能为空 dict可以为空</span>
+  
+  <span class="k">-</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">initWithDomain</span><span class="p">:(</span><span class="n">NSErrorDomain</span><span class="p">)</span><span class="nv">domain</span> <span class="nf">code</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">code</span> <span class="nf">userInfo</span><span class="p">:(</span><span class="n">nullable</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dict</span><span class="p">;</span>
+
+  <span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">errorWithDomain</span><span class="p">:(</span><span class="n">NSErrorDomain</span><span class="p">)</span><span class="nv">domain</span> <span class="nf">code</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">code</span> <span class="nf">userInfo</span><span class="p">:(</span><span class="n">nullable</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dict</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="属性">属性</h3>
+
+<ul>
+  <li>
+    <p>@property (readonly) NSInteger code;//错误代码</p>
+  </li>
+  <li>
+    <p>@property (readonly, copy) NSDictionary *userInfo;//错误信息</p>
+  </li>
+  <li>
+    <p>@property (readonly, copy) NSString *localizedDescription;//获取本地化描述</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSString *localizedFailureReason;//获取失败原因</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSString *localizedRecoverySuggestion;//获取恢复建议</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSArray&lt;NSString *&gt; *localizedRecoveryOptions;本地恢复建议</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, strong) id recoveryAttempter;</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSString *helpAnchor;</p>
+  </li>
+</ul>
+
+<h3 id="nserror错误code对照表">NSError错误code对照表</h3>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">NSError</span> <span class="n">codes</span> <span class="k">in</span> <span class="n">the</span> <span class="n">Cocoa</span> <span class="n">error</span> <span class="n">domain</span><span class="p">.</span>
+
+<span class="k">enum</span> <span class="p">{</span>
+ <span class="n">NSFileNoSuchFileError</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+ <span class="n">NSFileLockingError</span> <span class="o">=</span> <span class="mi">255</span><span class="p">,</span>
+ <span class="n">NSFileReadUnknownError</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+ <span class="n">NSFileReadNoPermissionError</span> <span class="o">=</span> <span class="mi">257</span><span class="p">,</span>
+ <span class="n">NSFileReadInvalidFileNameError</span> <span class="o">=</span> <span class="mi">258</span><span class="p">,</span>
+ <span class="n">NSFileReadCorruptFileError</span> <span class="o">=</span> <span class="mi">259</span><span class="p">,</span>
+ <span class="n">NSFileReadNoSuchFileError</span> <span class="o">=</span> <span class="mi">260</span><span class="p">,</span>
+ <span class="n">NSFileReadInapplicableStringEncodingError</span> <span class="o">=</span> <span class="mi">261</span><span class="p">,</span>
+ <span class="n">NSFileReadUnsupportedSchemeError</span> <span class="o">=</span> <span class="mi">262</span><span class="p">,</span>
+ <span class="n">NSFileReadTooLargeError</span> <span class="o">=</span> <span class="mi">263</span><span class="p">,</span>
+ <span class="n">NSFileReadUnknownStringEncodingError</span> <span class="o">=</span> <span class="mi">264</span><span class="p">,</span>
+ <span class="n">NSFileWriteUnknownError</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
+ <span class="n">NSFileWriteNoPermissionError</span> <span class="o">=</span> <span class="mi">513</span><span class="p">,</span>
+ <span class="n">NSFileWriteInvalidFileNameError</span> <span class="o">=</span> <span class="mi">514</span><span class="p">,</span>
+ <span class="n">NSFileWriteInapplicableStringEncodingError</span> <span class="o">=</span> <span class="mi">517</span><span class="p">,</span>
+ <span class="n">NSFileWriteUnsupportedSchemeError</span> <span class="o">=</span> <span class="mi">518</span><span class="p">,</span>
+ <span class="n">NSFileWriteOutOfSpaceError</span> <span class="o">=</span> <span class="mi">640</span><span class="p">,</span>
+ <span class="n">NSFileWriteVolumeReadOnlyError</span> <span class="o">=</span> <span class="mi">642</span><span class="n">m</span>
+ <span class="n">NSKeyValueValidationError</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+ <span class="n">NSFormattingError</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
+ <span class="n">NSUserCancelledError</span> <span class="o">=</span> <span class="mi">3072</span><span class="p">,</span>
+
+<span class="n">NSFileErrorMinimum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+ <span class="n">NSFileErrorMaximum</span> <span class="o">=</span> <span class="mi">1023</span><span class="p">,</span>
+ <span class="n">NSValidationErrorMinimum</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+ <span class="n">NSValidationErrorMaximum</span> <span class="o">=</span> <span class="mi">2047</span><span class="p">,</span>
+ <span class="n">NSFormattingErrorMinimum</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
+ <span class="n">NSFormattingErrorMaximum</span> <span class="o">=</span> <span class="mi">2559</span><span class="p">,</span>
+
+<span class="n">NSPropertyListReadCorruptError</span> <span class="o">=</span> <span class="mi">3840</span><span class="p">,</span>
+ <span class="n">NSPropertyListReadUnknownVersionError</span> <span class="o">=</span> <span class="mi">3841</span><span class="p">,</span>
+ <span class="n">NSPropertyListReadStreamError</span> <span class="o">=</span> <span class="mi">3842</span><span class="p">,</span>
+ <span class="n">NSPropertyListWriteStreamError</span> <span class="o">=</span> <span class="mi">3851</span><span class="p">,</span>
+ <span class="n">NSPropertyListErrorMinimum</span> <span class="o">=</span> <span class="mi">3840</span><span class="p">,</span>
+ <span class="n">NSPropertyListErrorMaximum</span> <span class="o">=</span> <span class="mi">4095</span>
+
+<span class="n">NSExecutableErrorMinimum</span> <span class="o">=</span> <span class="mi">3584</span><span class="p">,</span>
+ <span class="n">NSExecutableNotLoadableError</span> <span class="o">=</span> <span class="mi">3584</span><span class="p">,</span>
+ <span class="n">NSExecutableArchitectureMismatchError</span> <span class="o">=</span> <span class="mi">3585</span><span class="p">,</span>
+ <span class="n">NSExecutableRuntimeMismatchError</span> <span class="o">=</span> <span class="mi">3586</span><span class="p">,</span>
+ <span class="n">NSExecutableLoadError</span> <span class="o">=</span> <span class="mi">3587</span><span class="p">,</span>
+ <span class="n">NSExecutableLinkError</span> <span class="o">=</span> <span class="mi">3588</span><span class="p">,</span>
+ <span class="n">NSExecutableErrorMaximum</span> <span class="o">=</span> <span class="mi">3839</span><span class="p">,</span>
+
+<span class="p">}</span>
+ <span class="n">URL</span> <span class="n">Loading</span> <span class="n">System</span> <span class="n">Error</span> <span class="n">Codes</span>
+
+<span class="n">These</span> <span class="n">values</span> <span class="n">are</span> <span class="n">returned</span> <span class="n">as</span> <span class="n">the</span> <span class="n">error</span> <span class="n">code</span> <span class="n">property</span> <span class="n">of</span> <span class="n">an</span> <span class="n">NSError</span> <span class="n">object</span> <span class="n">with</span> <span class="n">the</span> <span class="n">domain</span> <span class="err">“</span><span class="n">NSURLErrorDomain</span><span class="err">”</span><span class="p">.</span>
+
+<span class="k">typedef</span> <span class="k">enum</span>
+ <span class="p">{</span>
+ <span class="n">NSURLErrorUnknown</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+ <span class="n">NSURLErrorCancelled</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span><span class="p">,</span>
+ <span class="n">NSURLErrorBadURL</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span>
+ <span class="n">NSURLErrorTimedOut</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1001</span><span class="p">,</span>
+ <span class="n">NSURLErrorUnsupportedURL</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1002</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotFindHost</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1003</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotConnectToHost</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1004</span><span class="p">,</span>
+ <span class="n">NSURLErrorDataLengthExceedsMaximum</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1103</span><span class="p">,</span>
+ <span class="n">NSURLErrorNetworkConnectionLost</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1005</span><span class="p">,</span>
+ <span class="n">NSURLErrorDNSLookupFailed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1006</span><span class="p">,</span>
+ <span class="n">NSURLErrorHTTPTooManyRedirects</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1007</span><span class="p">,</span>
+ <span class="n">NSURLErrorResourceUnavailable</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1008</span><span class="p">,</span>
+ <span class="n">NSURLErrorNotConnectedToInternet</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1009</span><span class="p">,</span>
+ <span class="n">NSURLErrorRedirectToNonExistentLocation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1010</span><span class="p">,</span>
+ <span class="n">NSURLErrorBadServerResponse</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1011</span><span class="p">,</span>
+ <span class="n">NSURLErrorUserCancelledAuthentication</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1012</span><span class="p">,</span>
+ <span class="n">NSURLErrorUserAuthenticationRequired</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1013</span><span class="p">,</span>
+ <span class="n">NSURLErrorZeroByteResource</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1014</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotDecodeRawData</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1015</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotDecodeContentData</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1016</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotParseResponse</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1017</span><span class="p">,</span>
+ <span class="n">NSURLErrorFileDoesNotExist</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1100</span><span class="p">,</span>
+ <span class="n">NSURLErrorFileIsDirectory</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1101</span><span class="p">,</span>
+ <span class="n">NSURLErrorNoPermissionsToReadFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1102</span><span class="p">,</span>
+ <span class="n">NSURLErrorSecureConnectionFailed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1200</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateHasBadDate</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1201</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateUntrusted</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1202</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateHasUnknownRoot</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1203</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateNotYetValid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1204</span><span class="p">,</span>
+ <span class="n">NSURLErrorClientCertificateRejected</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1205</span><span class="p">,</span>
+ <span class="n">NSURLErrorClientCertificateRequired</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1206</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotLoadFromNetwork</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2000</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotCreateFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3000</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotOpenFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3001</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotCloseFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3002</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotWriteToFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3003</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotRemoveFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3004</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotMoveFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3005</span><span class="p">,</span>
+ <span class="n">NSURLErrorDownloadDecodingFailedMidStream</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3006</span><span class="p">,</span>
+ <span class="n">NSURLErrorDownloadDecodingFailedToComplete</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3007</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="有关网络请求失败的解释">有关网络请求失败的解释</h3>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="c1">//NSURLErrorUnknown</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无效的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">999</span><span class="p">:</span><span class="c1">//NSURLErrorCancelled</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无效的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1000</span><span class="p">:</span><span class="c1">//NSURLErrorBadURL</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无效的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1001</span><span class="p">:</span><span class="c1">//NSURLErrorTimedOut</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"网络不给力，请稍后再试"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1002</span><span class="p">:</span><span class="c1">//NSURLErrorUnsupportedURL</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"不支持的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1003</span><span class="p">:</span><span class="c1">//NSURLErrorCannotFindHost</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"找不到服务器"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1004</span><span class="p">:</span><span class="c1">//NSURLErrorCannotConnectToHost</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"连接不上服务器"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1103</span><span class="p">:</span><span class="c1">//NSURLErrorDataLengthExceedsMaximum</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"请求数据长度超出最大限度"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1005</span><span class="p">:</span><span class="c1">//NSURLErrorNetworkConnectionLost</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"网络连接异常"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1006</span><span class="p">:</span><span class="c1">//NSURLErrorDNSLookupFailed</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"DNS查询失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1007</span><span class="p">:</span><span class="c1">//NSURLErrorHTTPTooManyRedirects</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"HTTP请求重定向"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1008</span><span class="p">:</span><span class="c1">//NSURLErrorResourceUnavailable</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"资源不可用"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1009</span><span class="p">:</span><span class="c1">//NSURLErrorNotConnectedToInternet</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无网络连接"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1010</span><span class="p">:</span><span class="c1">//NSURLErrorRedirectToNonExistentLocation</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"重定向到不存在的位置"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1011</span><span class="p">:</span><span class="c1">//NSURLErrorBadServerResponse</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"服务器响应异常"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1012</span><span class="p">:</span><span class="c1">//NSURLErrorUserCancelledAuthentication</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"用户取消授权"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1013</span><span class="p">:</span><span class="c1">//NSURLErrorUserAuthenticationRequired</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"需要用户授权"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1014</span><span class="p">:</span><span class="c1">//NSURLErrorZeroByteResource</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"零字节资源"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1015</span><span class="p">:</span><span class="c1">//NSURLErrorCannotDecodeRawData</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法解码原始数据"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1016</span><span class="p">:</span><span class="c1">//NSURLErrorCannotDecodeContentData</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法解码内容数据"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1017</span><span class="p">:</span><span class="c1">//NSURLErrorCannotParseResponse</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法解析响应"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1018</span><span class="p">:</span><span class="c1">//NSURLErrorInternationalRoamingOff</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"国际漫游关闭"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1019</span><span class="p">:</span><span class="c1">//NSURLErrorCallIsActive</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"被叫激活"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1020</span><span class="p">:</span><span class="c1">//NSURLErrorDataNotAllowed</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"数据不被允许"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1021</span><span class="p">:</span><span class="c1">//NSURLErrorRequestBodyStreamExhausted</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"请求体"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1100</span><span class="p">:</span><span class="c1">//NSURLErrorFileDoesNotExist</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"文件不存在"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1101</span><span class="p">:</span><span class="c1">//NSURLErrorFileIsDirectory</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"文件是个目录"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1102</span><span class="p">:</span><span class="c1">//NSURLErrorNoPermissionsToReadFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无读取文件权限"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1200</span><span class="p">:</span><span class="c1">//NSURLErrorSecureConnectionFailed</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"安全连接失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1201</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateHasBadDate</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"服务器证书失效"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1202</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateUntrusted</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"不被信任的服务器证书"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1203</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateHasUnknownRoot</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"未知Root的服务器证书"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1204</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateNotYetValid</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"服务器证书未生效"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1205</span><span class="p">:</span><span class="c1">//NSURLErrorClientCertificateRejected</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"客户端证书被拒"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1206</span><span class="p">:</span><span class="c1">//NSURLErrorClientCertificateRequired</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"需要客户端证书"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">2000</span><span class="p">:</span><span class="c1">//NSURLErrorCannotLoadFromNetwork</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法从网络获取"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3000</span><span class="p">:</span><span class="c1">//NSURLErrorCannotCreateFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法创建文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3001</span><span class="p">:</span><span class="c1">// NSURLErrorCannotOpenFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法打开文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3002</span><span class="p">:</span><span class="c1">//NSURLErrorCannotCloseFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法关闭文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3003</span><span class="p">:</span><span class="c1">//NSURLErrorCannotWriteToFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法写入文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3004</span><span class="p">:</span><span class="c1">//NSURLErrorCannotRemoveFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法删除文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3005</span><span class="p">:</span><span class="c1">//NSURLErrorCannotMoveFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法移动文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3006</span><span class="p">:</span><span class="c1">//NSURLErrorDownloadDecodingFailedMidStream</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"下载解码数据失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3007</span><span class="p">:</span><span class="c1">//NSURLErrorDownloadDecodingFailedToComplete</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"下载解码数据失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+</code></pre></div></div>
+
+
+                <hr style="visibility: hidden;">
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/01-18-2018/WCDB.html" data-toggle="tooltip" data-placement="top" title="WCDB漫谈">
+                        Previous<br>
+                        <span>WCDB漫谈</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/08-03-2018/JavaScriptBridge.html" data-toggle="tooltip" data-placement="top" title="WebViewJavascriptBridge">
+                        Next<br>
+                        <span>WebViewJavascriptBridge</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+                
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#OS" title="OS" rel="2">
+                                    OS
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#Linux" title="Linux" rel="2">
+                                    Linux
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#前端开发" title="前端开发" rel="22">
+                                    前端开发
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#JavaScript" title="JavaScript" rel="4">
+                                    JavaScript
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#生活" title="生活" rel="3">
+                                    生活
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="30">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#工具集" title="工具集" rel="8">
+                                    工具集
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#Bug录" title="Bug录" rel="2">
+                                    Bug录
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#杂货铺" title="杂货铺" rel="13">
+                                    杂货铺
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#swift" title="swift" rel="2">
+                                    swift
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#前端" title="前端" rel="3">
+                                    前端
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#React Native" title="React Native" rel="3">
+                                    React Native
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="https://yizibi.github.io/">一之笔</a></li>
+                    
+                        <li><a href="https://ioscaff.com/">iOS Caff</a></li>
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="http://www.vivianchen.cn/">Vivian陈薇</a></li>
+                    
+                        <li><a href="https://www.anotherhome.net/">当时只道是寻常</a></li>
+                    
+                        <li><a href="http://su.gallery/">Su</a></li>
+                    
+                        <li><a href="http://www.yinhaomin.com/">殷浩民的博客</a></li>
+                    
+                        <li><a href="http://mida.re/">乱序</a></li>
+                    
+                        <li><a href="http://qianduan.guru/">前端外刊评论</a></li>
+                    
+                        <li><a href="http://hmqk1995.github.io">Luke 的自留地</a></li>
+                    
+                        <li><a href="http://ebnbin.com/">Ebn's Blog</a></li>
+                    
+                        <li><a href="http://blog.smdcn.net">SmdCn's Blog</a></li>
+                    
+                        <li><a href="http://dhong.co">DHong Say</a></li>
+                    
+                        <li><a href="http://qutianbai.com/#blog">曲天白</a></li>
+                    
+                        <li><a href="https://prprpr.xyz/">qwq的一篇天地</a></li>
+                    
+                        <li><a href="http://ykksmile.top/">Ykk's blog'</a></li>
+                    
+                        <li><a href="http://u-hey.com/">UHEY's BLOG'</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "oragekk";
+    var disqus_identifier = "/05-31-2018/NSError";
+    var disqus_url = "http://localhost:4000/05-31-2018/NSError.html";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    <li>
+                        <a target="_blank" href="http://www.jianshu.com/users/752cf0a6b9b4/latest_articles">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">简</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/hkoragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Oragekk Blog 2020 | Powered by <a href="https://www.jekyll.com.cn/">Jekyll</a>
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=oragekk&repo=oragekk.github.io&type=star&count=true" >
+                    </iframe>             
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+<!-- 页面点击小红心 -->
+<script src="/js/love.js "></script>
+<script src="/js/jquery.iMissYou.js "></script>
+<script type="text/javascript">
+    
+    $(function(){
+        var curProtocol = window.location.protocol.split(':')[0];
+        var icoSrc;
+        if (curProtocol === 'https') {
+            icoSrc = 'https://oragekk.me/img/iMissYouFavicon.ico';        
+        }
+        else {
+            icoSrc = 'http://oragekk.me/img/iMissYouFavicon.ico';
+        }
+        $.iMissYou({
+            //当前网页被隐藏的时候要显示的标题
+            title:"~~(>_<)~~ I Miss You.",
+            //是否要切换icon， enabled布尔值设定是否开启，src用来设定使用的icon
+            favicon: {
+                enabled: true,
+                src:icoSrc
+            }
+        });
+    
+    });
+    
+</script>
+<!-- Service Worker -->
+
+<script src="/js/snackbar.js "></script>
+<script src="/js/sw-registration.js "></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+<!-- 百度自动推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-86818126-1';
+    var _gaDomain = 'oragekk.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4d2621849416c2c83fb74cfc8d0f5668';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;    
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+<!--</div>-->
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+
+<!-- Migrate from head to bottom, no longer block render and still work -->
+<!-- js依赖引入区 -->
+<script type="text/javascript">
+function browserRedirect() {
+var sUserAgent = navigator.userAgent.toLowerCase();
+var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+var bIsAndroid = sUserAgent.match(/android/i) == "android";
+var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+// document.writeln("您的浏览设备为：");
+if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+
+// alert("手机浏览！");
+
+
+} else {
+
+// alert("PC浏览！");
+/// 一下两行代码为点击背景彩虹条和鼠标特效
+// document.write("<script type='text/javascript' size='150' alpha='0.8' zIndex='-10' src='../js/dist/ribbon.js'><\/script>");
+// document.write("<script type='text/javascript' color='0,188,212' opacity='0.7' zIndex='-2' count='99' src='http://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js'><\/script>");
+// 粒子特效更换为maxjia.js---http://cdn.maxjia.com/js/particles.min.js
+// document.write("<script src='http://cdn.maxjia.com/js/particles.min.js'><\/script>");
+}
+}
+browserRedirect();
+</script>
+</body>
+</html>

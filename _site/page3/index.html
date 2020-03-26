@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="关于开发与设计、黑客与画家 | 黄坤，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Oragekk黄坤 的个人博客，与你一起发现更大的世界。">
+    <meta name="keywords"  content="黄坤, Oragekk, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, iOS, Lynn">
+    <meta name="theme-color" content="#000000">
+    
+    <title>Oragekk's Blog - 心之所向，身亦至之</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="http://localhost:4000/page3/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+    <!--<link rel="stylesheet" href="/css/pygments.css">-->
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Oragekk Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                        <!--
+                        <div class="list-group">
+                        <a class="list-group-item" href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; HOME</a>
+                        </div>
+                        -->
+                    </li>
+                    
+                    <li>
+                        <a href="/about.html">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags.html">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+  <!--<div id="particles-js">-->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/post-bg-flower.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Oragekk Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Goals determine what you are going to be. —— Julius Erving</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+    			
+<div class="post-preview">
+    <a href="/04-14-2017/%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F%E4%BB%8E%E5%A4%9A%E8%AF%B4%E8%BF%81%E7%A7%BB%E5%88%B0disqus.html">
+        <h2 class="post-title">
+            评论系统从多说迁移到disqus指南
+        </h2>
+        
+        <h3 class="post-subtitle">
+            轮子，前端开发，杂货铺
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  由于多说评论系统将于6月1日下线，所以准备迁移至disqus，相比较的话对于国内环境还是多说好用一点，毕竟加载快，支持各大媒体的分享，也不用小伙伴们翻墙；而disqus分享也只支持Facebook和twitter。。PS:貌似现在又被墙了，以后有时间再换吧，目前就先这样，国内据说畅言还不错
+
+
+迁移过程
+
+1.首先为了不丢失原有评论，导出多说评论
+
+
+2.文件转换
+
+
+  由于disq...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on April 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/04-13-2017/runtime%E5%BF%AB%E9%80%9F%E5%BD%92%E6%A1%A3.html">
+        <h2 class="post-title">
+            利用Runtime进行快速归档
+        </h2>
+        
+        <h3 class="post-subtitle">
+            iOS，前端开发
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  使用runtime进行归档，对我们的最大遍历就是高效，快速。尤其适用于model中属性非常多的时候
+
+
+Person.h
+
+
+person.m
+
+
+viewController.m
+
+
+printResult
+
+
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on April 13, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/03-14-2017/%E8%85%BE%E8%AE%AF%E5%85%AC%E7%9B%8A404.html">
+        <h2 class="post-title">
+            本站更新腾讯公益404页面-帮助更多孩子回家
+        </h2>
+        
+        <h3 class="post-subtitle">
+            Blog，前端开发
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  博主是一个善良的蓝孩子，so..发现了这个404，决定舍弃我漂亮的404来帮助更多孩子回家
+
+
+最后怀念一眼
+
+
+现在的404
+
+
+
+  PS:记得改掉layout 原404为default 公益404为false
+
+
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on March 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/03-14-2017/keychain%E6%9B%B4%E6%96%B0.html">
+        <h2 class="post-title">
+            iOS 10.3 keychain 重大更新
+        </h2>
+        
+        <h3 class="post-subtitle">
+            iOS，前端开发
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  转载自微信公众号《Mrpeak杂货铺》
+
+
+
+
+iOS 10.3 还未正式发布，beta 版中一个关于keychain 特性的小修改，就已经引起了广泛的关注。
+
+改动如下
+
+
+  如果 App 被删除，之前存储于 keychain 中的数据也会一同被清除。
+  如果使用了 keychain group，只要当 group 所有相关的 App 被删除时，keychain 中的数据才会被删...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on March 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/02-13-2017/cell%E5%A4%8D%E7%94%A8-accessoryType%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95.html">
+        <h2 class="post-title">
+            Cell的accessoryType属性标记单元格之后，出现的重用问题
+        </h2>
+        
+        <h3 class="post-subtitle">
+            iOS，Bug录
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  今天项目里出现一个问题，就是做一个列表选择，然后点击导航栏的确定按钮返回上级界面，并把选择的cell数据传递到上级界面。再使用accessoryType属性标记单元格之后会出现重用问题。
+
+
+解决办法
+
+  
+    把tableView的allowsMultipleSelection 属性设为了YES；
+
+      _tableView.allowsMultipleSelectio...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on February 13, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/02-07-2017/Mobile-and-PC-loading-different-code.html">
+        <h2 class="post-title">
+            Mobile and PC loading different code
+        </h2>
+        
+        <h3 class="post-subtitle">
+            JavaScript，前端开发
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  通过js判断moblie端和pc端进而加载不同的css或者js
+
+
+废话不多说，上代码
+		&lt;script type="text/javascript"&gt;
+		function browserRedirect() {
+		var sUserAgent = navigator.userAgent.toLowerCase();
+		var bIsIpad = sUserAgen...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on February 7, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/01-19-2017/AFNETworking-A-memory-leak.html">
+        <h2 class="post-title">
+            AFNetworking A memory leak
+        </h2>
+        
+        <h3 class="post-subtitle">
+            Bug，iOS
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  细心的你是否也发现了AFN的内存泄漏的问题了呢.
+
+
+解决方法
+
+    + (AFHTTPSessionManager *)sharedHTTPSession{
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        manager = [AFHTTPSessionManag...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on January 19, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/01-16-2017/%E4%B8%80%E4%BA%BA%E4%B8%80%E5%8F%A5%E5%AE%8B%E8%AF%8D.html">
+        <h2 class="post-title">
+            一人一句宋词，最美的都在这里
+        </h2>
+        
+        <h3 class="post-subtitle">
+            诗词，随笔
+        </h3>
+        
+        <div class="post-content-preview">
+            
+
+
+  写来留待日后慢慢欣赏😜
+
+
+苏轼
+十年生死两茫茫，
+不思量，自难忘。
+
+陆游
+红酥手，黄藤酒，
+满城春色宫墙柳。
+
+李清照
+此情无计可消除，
+才下眉头，却上心头。
+
+辛弃疾
+众里寻他千百度。
+蓦然回首，那人却在，灯火阑珊处。
+
+柳永
+多情自古伤离别，
+更那堪冷落清秋节！
+
+范仲淹
+羌管悠悠霜满地，
+人不寐，将军白发征夫泪。
+
+晏殊
+无可奈何花落去，
+似曾相识燕归来。
+
+岳飞
+三十功...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on January 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/01-06-2017/iOS%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8Benum-NS_ENUM-NS_OPTIONS.html">
+        <h2 class="post-title">
+            iOS - Objectiv-C enum NS_ENUM NS_OPTIONS
+        </h2>
+        
+        <h3 class="post-subtitle">
+            基础知识，iOS开发，归纳笔记
+        </h3>
+        
+        <div class="post-content-preview">
+            
+
+
+  已被此妹萌哭，好了，废话不多说，进入正题，今天介绍一下objective-c中的枚举
+
+
+提要
+
+  首先要知道的是,枚举值 它是一个整形(int) 并且,它不参加内存的占用和释放 枚举定义变量即可直接使用,不用初始化
+  三种类型的枚举
+    
+      enum 在iOS6之前一般我们采用C风格的enum关键字可以定义枚举类型
+    
+
+    在iOS6之后引入两个宏来...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on January 6, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/12-31-2016/%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95.html">
+        <h2 class="post-title">
+            iOS - Image compression algorithm
+        </h2>
+        
+        <h3 class="post-subtitle">
+            算法，iOS开发，Demo 归纳笔记
+        </h3>
+        
+        <div class="post-content-preview">
+            
+
+  由于最近公司在做图片相册选择上传的功能，对于图片的压缩算法这里我借鉴了ochina的ios端App。其中有涉及到图片压缩的算法，这里贴出来留待后用;
+
+
+GACompressionPicHandle.h
+
+	#import &lt;Foundation/Foundation.h&gt;
+	#import &lt;UIKit/UIKit.h&gt;
+	#import &lt;CoreG...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on December 31, 2016
+    </p>
+</div>
+<hr>
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/page2">&larr; Newer Posts</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/page4">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
+
+
+    		</div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                                <a href="/tags.html#OS" title="OS" rel="2">
+                                    OS
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags.html#Linux" title="Linux" rel="2">
+                                    Linux
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags.html#前端开发" title="前端开发" rel="22">
+                                    前端开发
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags.html#JavaScript" title="JavaScript" rel="4">
+                                    JavaScript
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags.html#生活" title="生活" rel="3">
+                                    生活
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags.html#iOS" title="iOS" rel="30">
+                                    iOS
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags.html#工具集" title="工具集" rel="8">
+                                    工具集
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags.html#Bug录" title="Bug录" rel="2">
+                                    Bug录
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags.html#杂货铺" title="杂货铺" rel="13">
+                                    杂货铺
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags.html#swift" title="swift" rel="2">
+                                    swift
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags.html#前端" title="前端" rel="3">
+                                    前端
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags.html#React Native" title="React Native" rel="3">
+                                    React Native
+                                </a>
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/avatar-oragekk.jpg" />
+                        
+                        
+                            <p>Endeavor to see the good in every situation.<br>一生短暂，过程很美</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+                            <li>
+                                <a target="_blank" href="http://www.jianshu.com/users/752cf0a6b9b4/latest_articles">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">简</i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="http://weibo.com/Oragekk">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://www.facebook.com/hkoragekk">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://github.com/oragekk">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </section>
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="https://yizibi.github.io/">一之笔</a></li>
+                    
+                        <li><a href="https://ioscaff.com/">iOS Caff</a></li>
+                    
+                        <li><a href="http://huangxuan.me">Hux Blog</a></li>
+                    
+                        <li><a href="http://www.vivianchen.cn/">Vivian陈薇</a></li>
+                    
+                        <li><a href="https://www.anotherhome.net/">当时只道是寻常</a></li>
+                    
+                        <li><a href="http://su.gallery/">Su</a></li>
+                    
+                        <li><a href="http://www.yinhaomin.com/">殷浩民的博客</a></li>
+                    
+                        <li><a href="http://mida.re/">乱序</a></li>
+                    
+                        <li><a href="http://qianduan.guru/">前端外刊评论</a></li>
+                    
+                        <li><a href="http://hmqk1995.github.io">Luke 的自留地</a></li>
+                    
+                        <li><a href="http://ebnbin.com/">Ebn's Blog</a></li>
+                    
+                        <li><a href="http://blog.smdcn.net">SmdCn's Blog</a></li>
+                    
+                        <li><a href="http://dhong.co">DHong Say</a></li>
+                    
+                        <li><a href="http://qutianbai.com/#blog">曲天白</a></li>
+                    
+                        <li><a href="https://prprpr.xyz/">qwq的一篇天地</a></li>
+                    
+                        <li><a href="http://ykksmile.top/">Ykk's blog'</a></li>
+                    
+                        <li><a href="http://u-hey.com/">UHEY's BLOG'</a></li>
+                    
+                </ul>
+                
+    		</div>
+        
+	</div>
+</div>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    <li>
+                        <a target="_blank" href="http://www.jianshu.com/users/752cf0a6b9b4/latest_articles">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">简</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/hkoragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/oragekk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Oragekk Blog 2020 | Powered by <a href="https://www.jekyll.com.cn/">Jekyll</a>
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=oragekk&repo=oragekk.github.io&type=star&count=true" >
+                    </iframe>             
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+<!-- 页面点击小红心 -->
+<script src="/js/love.js "></script>
+<script src="/js/jquery.iMissYou.js "></script>
+<script type="text/javascript">
+    
+    $(function(){
+        var curProtocol = window.location.protocol.split(':')[0];
+        var icoSrc;
+        if (curProtocol === 'https') {
+            icoSrc = 'https://oragekk.me/img/iMissYouFavicon.ico';        
+        }
+        else {
+            icoSrc = 'http://oragekk.me/img/iMissYouFavicon.ico';
+        }
+        $.iMissYou({
+            //当前网页被隐藏的时候要显示的标题
+            title:"~~(>_<)~~ I Miss You.",
+            //是否要切换icon， enabled布尔值设定是否开启，src用来设定使用的icon
+            favicon: {
+                enabled: true,
+                src:icoSrc
+            }
+        });
+    
+    });
+    
+</script>
+<!-- Service Worker -->
+
+<script src="/js/snackbar.js "></script>
+<script src="/js/sw-registration.js "></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+<!-- 百度自动推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-86818126-1';
+    var _gaDomain = 'oragekk.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4d2621849416c2c83fb74cfc8d0f5668';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+<!--</div>-->
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+
+<!-- Migrate from head to bottom, no longer block render and still work -->
+<!-- js依赖引入区 -->
+<script type="text/javascript">
+function browserRedirect() {
+var sUserAgent = navigator.userAgent.toLowerCase();
+var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+var bIsAndroid = sUserAgent.match(/android/i) == "android";
+var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+// document.writeln("您的浏览设备为：");
+if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+
+// alert("手机浏览！");
+
+
+} else {
+
+// alert("PC浏览！");
+/// 一下两行代码为点击背景彩虹条和鼠标特效
+// document.write("<script type='text/javascript' size='150' alpha='0.8' zIndex='-10' src='../js/dist/ribbon.js'><\/script>");
+// document.write("<script type='text/javascript' color='0,188,212' opacity='0.7' zIndex='-2' count='99' src='http://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js'><\/script>");
+// 粒子特效更换为maxjia.js---http://cdn.maxjia.com/js/particles.min.js
+// document.write("<script src='http://cdn.maxjia.com/js/particles.min.js'><\/script>");
+}
+}
+browserRedirect();
+</script>
+</body>
+</html>

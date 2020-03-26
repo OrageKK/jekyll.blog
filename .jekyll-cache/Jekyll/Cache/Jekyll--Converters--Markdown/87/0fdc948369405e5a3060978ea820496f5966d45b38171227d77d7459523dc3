@@ -1,0 +1,48 @@
+I"<blockquote>
+  <p>本文介绍使用WKWebView拦截url进行原生界面跳转</p>
+</blockquote>
+
+<p><img src="https://storage1.cuntuku.com/2017/05/27/3.gif" alt="3.gif" /></p>
+
+<ul>
+  <li>使用代理方法decidePolicyForNavigationAction</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">decidePolicyForNavigationAction</span><span class="p">:(</span><span class="n">WKNavigationAction</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigationAction</span> <span class="nf">decisionHandler</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">WKNavigationActionPolicy</span><span class="p">))</span><span class="nv">decisionHandler</span> <span class="p">{</span>
+    <span class="c1">// 获取完整url并进行UTF-8转码</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">strRequest</span> <span class="o">=</span> <span class="p">[</span><span class="n">navigationAction</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">URL</span><span class="p">.</span><span class="n">absoluteString</span> <span class="nf">stringByRemovingPercentEncoding</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">([</span><span class="n">strRequest</span> <span class="nf">hasPrefix</span><span class="p">:</span><span class="s">@"app://"</span><span class="p">])</span> <span class="p">{</span>
+        <span class="c1">// 拦截点击链接</span>
+        <span class="p">[</span><span class="n">self</span> <span class="nf">handleCustomAction</span><span class="p">:</span><span class="n">strRequest</span><span class="p">];</span>
+        <span class="c1">// 不允许跳转</span>
+      	<span class="n">decisionHandler</span><span class="p">(</span><span class="n">WKNavigationActionPolicyCancel</span><span class="p">);</span>
+    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+    	<span class="c1">// 允许跳转</span>
+        <span class="n">decisionHandler</span><span class="p">(</span><span class="n">WKNavigationActionPolicyAllow</span><span class="p">);</span>
+        
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>自定义方法传过来url进行判断，需要html元素本身就有跳转链接，才可以拦截，如没有，拦截不到。下文app://xxx链接为自定义链接</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">handleCustomAction</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">URL</span>
+<span class="p">{</span>
+    <span class="c1">// 判断跳转</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">link_id</span> <span class="o">=</span> <span class="s">@""</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">([</span><span class="n">URL</span> <span class="nf">hasPrefix</span><span class="p">:</span><span class="s">@"app://video"</span><span class="p">])</span> <span class="p">{</span>
+        <span class="c1">// 视频</span>
+        <span class="n">MMLog</span><span class="p">(</span><span class="s">@"点击了视频%@"</span><span class="p">,</span><span class="n">link_id</span><span class="p">);</span>
+    <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">URL</span> <span class="nf">hasPrefix</span><span class="p">:</span><span class="s">@"app://item"</span><span class="p">])</span> <span class="p">{</span>
+        <span class="c1">// 单品</span>
+        <span class="n">MMLog</span><span class="p">(</span><span class="s">@"点击了单品%@"</span><span class="p">,</span><span class="n">link_id</span><span class="p">);</span>
+    <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">URL</span> <span class="nf">hasPrefix</span><span class="p">:</span><span class="s">@"app://brand"</span><span class="p">])</span> <span class="p">{</span>
+        <span class="c1">// 品牌</span>
+        <span class="n">link_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">URL</span> <span class="nf">substringFromIndex</span><span class="p">:[</span><span class="n">NSString</span> <span class="nf">stringWithFormat</span><span class="p">:</span><span class="s">@"app://brand"</span><span class="p">].</span><span class="n">length</span><span class="p">];</span>
+        <span class="n">MMLog</span><span class="p">(</span><span class="s">@"点击了品牌%@"</span><span class="p">,</span><span class="n">link_id</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

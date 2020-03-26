@@ -1,0 +1,183 @@
+I"�)<blockquote>
+  <p>MacOS 自带的bash 作为几乎所有Linux发行版的默认终端，正常使用时没什么问题的</p>
+
+  <p>这里介绍一个更强大的终端神器</p>
+</blockquote>
+
+<h2 id="背景介绍">背景介绍</h2>
+
+<p>在unix 内核的操作系统中,当然现在衍生出好多分支,linux ,OS X 都算.</p>
+
+<p>shell 就算和上面这些系统内核指令打交道的一座桥梁,我们通过键盘输入一种自己容易记忆识别的符号标识(shell 命令)</p>
+
+<p>然后 shell解析这种命令再反馈给内核去执行一系列操作.</p>
+
+<p>zsh 和 shell 有什么关系呢?</p>
+
+<p>其实 zsh 也是一种 shell ,但是并不是我们系统默认的 shell ,unix 衍生系统的默认shell 都是 bash。</p>
+
+<p>查看已安装shell
+查看Mac上已有的shell,一共有6种
+———————</p>
+
+<p><code class="highlighter-rouge">cat /etc/shells</code></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin/bash
+/bin/csh
+/bin/ksh
+/bin/sh
+/bin/tcsh
+/bin/zsh
+</code></pre></div></div>
+
+<h2 id="安装oh-my-zsh">安装<strong>“oh my zsh”</strong></h2>
+
+<p>使用 <code class="highlighter-rouge">crul</code> 安装：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sh <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh<span class="si">)</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>使用 <code class="highlighter-rouge">wget</code> 安装：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sh <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh <span class="nt">-O</span> -<span class="si">)</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>安装成功：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Cloning Oh My Zsh...
+Cloning into <span class="s1">'/root/.oh-my-zsh'</span>...
+remote: Counting objects: 712, <span class="k">done</span><span class="nb">.</span>
+remote: Compressing objects: 100% <span class="o">(</span>584/584<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>
+remote: Total 712 <span class="o">(</span>delta 15<span class="o">)</span>, reused 522 <span class="o">(</span>delta 4<span class="o">)</span>, pack-reused 0
+Receiving objects: 100% <span class="o">(</span>712/712<span class="o">)</span>, 443.58 KiB | 27.00 KiB/s, <span class="k">done</span><span class="nb">.</span>
+Resolving deltas: 100% <span class="o">(</span>15/15<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>
+Checking connectivity... <span class="k">done</span><span class="nb">.</span>
+Looking <span class="k">for </span>an existing zsh config...
+Using the Oh My Zsh template file and adding it to ~/.zshrc
+Copying your current PATH and adding it to the end of ~/.zshrc <span class="k">for </span>you.
+Time to change your default shell to zsh!
+        __                                     __
+ ____  / /_     ____ ___  __  __   ____  _____/ /_
+/ __ <span class="se">\/</span> __ <span class="se">\ </span>  / __ <span class="sb">`</span>__ <span class="se">\/</span> / / /  /_  / / ___/ __ <span class="se">\</span>
+/ /_/ / / / /  / / / / / / /_/ /    / /_<span class="o">(</span>__  <span class="o">)</span> / / /
+<span class="se">\_</span>___/_/ /_/  /_/ /_/ /_/<span class="se">\_</span>_, /    /___/____/_/ /_/
+                       /____/                       ....is now installed!
+
+Please look over the ~/.zshrc file to <span class="k">select </span>plugins, themes, and options.
+p.s. Follow us at https://twitter.com/ohmyzsh.
+p.p.s. Get stickers and t-shirts at http://shop.planetargon.com.
+</code></pre></div></div>
+
+<p>安装完成以后，默认<code class="highlighter-rouge">Shell</code>的<code class="highlighter-rouge">~/.bashrc</code>文件默认不再加载了，替代的是<code class="highlighter-rouge">~/.zlogin</code>和<code class="highlighter-rouge">~/.zshrc</code>。所以如果你在<code class="highlighter-rouge">~/.bashrc</code>里配置了某些设置，需要把她们复制到<code class="highlighter-rouge">~/.zshrc</code>中。</p>
+
+<p>在<code class="highlighter-rouge">~/.zshrc</code> 中添加以下行</p>
+
+<p><code class="highlighter-rouge">source ~/.bash_profile</code></p>
+
+<h4 id="切换终端为zsh">切换终端为zsh</h4>
+
+<p><code class="highlighter-rouge">chsh -s /bin/zsh</code></p>
+
+<h4 id="oh-my-zsh-目录结构">oh my zsh 目录结构</h4>
+
+<p>进入<code class="highlighter-rouge">~/.oh-my-zsh</code>目录后，看看该目录的结构</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~ ls ~/.oh-my-zsh
+CONTRIBUTING.md cache           log             templates
+LICENSE.txt     custom          oh-my-zsh.sh    themes
+README.md       lib             plugins         tools
+</code></pre></div></div>
+
+<ul>
+  <li>lib 提供了核心功能的脚本库</li>
+  <li>tools 提供安装、升级等功能的快捷工具</li>
+  <li>plugins 自带插件的存在放位置</li>
+  <li>templates 自带模板的存在放位置</li>
+  <li>themes  自带主题文件的存在放位置</li>
+  <li>custom 个性化配置目录，自安装的插件和主题可放这里</li>
+</ul>
+
+<h3 id="3配置">3.配置</h3>
+
+<p><code class="highlighter-rouge">zsh</code> 的配置主要集中在<code class="highlighter-rouge">~/.zshrc</code>里，用 <code class="highlighter-rouge">vim</code> 或你喜欢的其他编辑器打开<code class="highlighter-rouge">.zshrc</code>。</p>
+
+<p>可以在此处定义自己的环境变量和别名，当然，<code class="highlighter-rouge">oh my zsh</code> 在安装时已经自动读取当前的环境变量并进行了设置，你可以继续追加其他环境变量。</p>
+
+<h4 id="别名设置">别名设置：</h4>
+
+<p><code class="highlighter-rouge">zsh</code>不仅可以设置通用别名，还能针对文件类型设置对应的打开程序，比如：</p>
+
+<ul>
+  <li><code class="highlighter-rouge">alias -s html=vi</code>，意思就是你在命令行输入 <code class="highlighter-rouge">hello.html</code>，<code class="highlighter-rouge">zsh</code>会为你自动打开<code class="highlighter-rouge">vim</code>并读取<code class="highlighter-rouge">hello.html</code>；</li>
+  <li><code class="highlighter-rouge">alias -s gz='tar -xzvf'</code>，表示自动解压后缀为<code class="highlighter-rouge">gz</code>的压缩包。</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alias cls='clear'
+alias ll='ls -l'
+alias la='ls -a'
+alias vi='vim'
+alias javac="javac -J-Dfile.encoding=utf8"
+alias grep="grep --color=auto"
+alias -s html=vi   # 在命令行直接输入后缀为 html 的文件名，会在 vim 中打开
+alias -s rb=vi     # 在命令行直接输入 ruby 文件，会在 vim 中打开
+alias -s py=vi       # 在命令行直接输入 python 文件，会用 vim 中打开，以下类似
+alias -s js=vi
+alias -s c=vi
+alias -s java=vi
+alias -s txt=vi
+alias -s gz='tar -xzvf'
+alias -s tgz='tar -xzvf'
+alias -s zip='unzip'
+alias -s bz2='tar -xjvf'
+</code></pre></div></div>
+
+<p>【其他】</p>
+
+<ul>
+  <li><a href="https://github.com/robbyrussell/oh-my-zsh/wiki/themes">github zsh 主题参考</a></li>
+  <li><a href="http://blog.sina.com.cn/s/blog_71539d240101fh8s.html">自定义zsh提示符</a></li>
+</ul>
+
+<h4 id="主题设置">主题设置：</h4>
+
+<p><code class="highlighter-rouge">oh my zsh</code> 提供了数十种主题，相关文件在<code class="highlighter-rouge">~/.oh-my-zsh/themes</code>目录下，你可以自己选择，也可以自己编写主题。</p>
+
+<p>在<code class="highlighter-rouge">.zshrc</code>里找到<code class="highlighter-rouge">ZSH_THEME</code>，就可以设置主题了，默认主题是：<code class="highlighter-rouge">ZSH_THEME=”robbyrussell”</code></p>
+
+<p><code class="highlighter-rouge">ZSH_THEME="random"</code>，主题设置为随机，这样我们每打开一个窗口，都会随机在默认主题中选择一个。</p>
+
+<h4 id="插件设置">插件设置：</h4>
+
+<p><code class="highlighter-rouge">oh my zsh</code>项目提供了完善的插件体系，相关的文件在<code class="highlighter-rouge">~/.oh-my-zsh/plugins</code>目录下，默认提供了100多种，大家可以根据自己的实际学习和工作环境采用，想了解每个插件的功能，只要打开相关目录下的 <code class="highlighter-rouge">zsh</code> 文件看一下就知道了。插件也是在<code class="highlighter-rouge">.zshrc</code>里配置，找到<code class="highlighter-rouge">plugins</code>关键字，你就可以加载自己的插件了，系统默认加载<code class="highlighter-rouge">git</code>，你可以在后面追加内容，如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plugins=(git zsh-autosuggestions autojump zsh-syntax-highlighting)
+</code></pre></div></div>
+
+<h5 id="安装-zsh-autosuggestions">安装 <code class="highlighter-rouge">zsh-autosuggestions</code></h5>
+
+<p>autosuggestions它是Oh-myszh的一个插件，作用基本上是根据历史输入指令的记录即时的提示，能够很大的提高效率</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+</code></pre></div></div>
+
+<p>添加至 <code class="highlighter-rouge">plugins</code></p>
+
+<h5 id="安装-zsh-syntax-highlighting">安装 <code class="highlighter-rouge">zsh-syntax-highlighting</code></h5>
+
+<p>代码高亮插件可以让终端颜色更加绚丽</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+</code></pre></div></div>
+
+<p>添加至 <code class="highlighter-rouge">plugins</code></p>
+
+<p><code class="highlighter-rouge">plugins=(zsh-autosuggestions git zsh-syntax-highlighting)</code></p>
+
+<h2 id="效果图">效果图</h2>
+
+<p><a href="https://imgchr.com/i/MarNhq"><img src="https://s2.ax1x.com/2019/11/15/MarNhq.md.png" alt="MarNhq.md.png" /></a></p>
+
+<h3 id="卸载oh-my-zsh">卸载oh my zsh</h3>
+
+<p>直接在终端中，运行<code class="highlighter-rouge">uninstall_oh_my_zsh</code>既可以卸载。</p>
+:ET

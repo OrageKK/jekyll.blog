@@ -1,0 +1,135 @@
+I"<blockquote>
+  <p><a href="http://www.jianshu.com/p/b7a646a6c80e">参考地址</a>
+ijkplayer 是一款做视频直播的框架，基于FFmpeg，支持Android和iOS。这里介绍一下iOS中集成ijkplayer</p>
+</blockquote>
+
+<h2 id="一ffmpeg">一、FFmpeg</h2>
+<p>FFmpeg是一套可以用来记录、转换数字音频、视频，并能将其转化为流的开源计算机程序。它包括了领先的音/视频编码库libavcodec等。</p>
+
+<p><strong>libavformat</strong>：用于各种音视频封装格式的生成和解析，包括获取解码所需信息以生成解码上下文结构
+和读取音视频帧等功能；</p>
+
+<p><strong>libavcodec</strong>：用于各种类型声音/图像编解码；</p>
+
+<p><strong>libavutil</strong>：包含一些公共的工具函数；</p>
+
+<p><strong>libswscale</strong>：用于视频场景比例缩放、色彩映射转换；</p>
+
+<p><strong>libpostproc</strong>：用于后期效果处理；</p>
+
+<p><strong>ffmpeg</strong>：该项目提供的一个工具，可用于格式转换、解码或电视卡即时编码等；</p>
+
+<p><strong>ffsever</strong>：一个 HTTP 多媒体即时广播串流服务器；</p>
+
+<p><strong>ffplay</strong>：是一个简单的播放器，使用ffmpeg 库解析和解码，通过SDL显示；</p>
+
+<h3 id="支持的编码">支持的编码</h3>
+<p>源自FFmpeg项目组的两个视频编码：</p>
+
+<p>Snow</p>
+
+<p>FFV1</p>
+<h3 id="支持的格式">支持的格式</h3>
+<p>ASF</p>
+
+<p>AVI</p>
+
+<p>BFI[7]</p>
+
+<p>IFF[8]</p>
+
+<p>RL2[9]</p>
+
+<p>FLV</p>
+
+<p>MXF, Material eXchange Format, SMPTE 377M</p>
+
+<p>Matroska</p>
+
+<p>Maxis XA[10]</p>
+
+<p>MSN Webcam stream[11]</p>
+
+<p>MPEG transport stream</p>
+
+<p>TXD[6]</p>
+
+<p>OMA[12]</p>
+
+<p>GXF, General eXchange Format, SMPTE 360M</p>
+
+<p>mov,mp4,m4a,3gp,</p>
+
+<h3 id="支持的协议">支持的协议</h3>
+
+<p>HTTP</p>
+
+<p>RTP</p>
+
+<p>RTSP</p>
+
+<p>RealMedia RTSP/RDT</p>
+
+<p>TCP</p>
+
+<p>UDP</p>
+
+<p>Gopher</p>
+
+<p>RTMP</p>
+
+<p>RTMPT, RTMPE, RTMPTE, RTMPS (via librtmp)</p>
+
+<p>SDP</p>
+
+<p>MMS over TCP</p>
+
+<h2 id="二下载ijkplayer">二、下载ijkplayer</h2>
+<p>ijkplayer下载地址:<a href="https://github.com/Bilibili/ijkplayer">https://github.com/Bilibili/ijkplayer</a></p>
+
+<p>下载完成后解压, 解压后文件夹内部目录如下图:
+<img src="https://storage2.cuntuku.com/2017/08/31/ijkplayer.png" alt="ijkplayer.png" /></p>
+
+<h2 id="三编译">三、编译</h2>
+<p>其实这里主要是编译FFmpeg，因为他是一个C语言的跨平台库，需要sh脚本来进行编译</p>
+
+<ol>
+  <li>打开终端, cd 到jkplayer-master文件夹中, 也就是下载完解压后的文件夹, 如下图:<img src="https://storage1.cuntuku.com/2017/08/31/1.png" alt="1.png" /></li>
+  <li>执行命令行<strong>./init-ios.sh</strong>, 这一步是去下载 ffmpeg 的, 时间会久一点, 耐心等一下.如下图:<img src="https://storage2.cuntuku.com/2017/08/31/2.png" alt="2.png" /></li>
+  <li>cd 到ios目录中</li>
+  <li>执行<strong>./compile-ffmpeg.sh clean</strong><img src="https://storage1.cuntuku.com/2017/08/31/3.png" alt="3.png" /></li>
+  <li>执行<strong>./compile-ffmpeg.sh all</strong>进行FFmpeg的编译，时间较久<img src="https://storage2.cuntuku.com/2017/08/31/4.png" alt="4.png" /></li>
+</ol>
+
+<h2 id="四打包ijkmediaframeworkframework框架">四、打包IJKMediaFramework.framework框架</h2>
+<p>其实集成ijkplayer有两种方法，一种是按照Demo中的导入IJKMediaPlayer.xcodeproj，此方法不是很推荐</p>
+
+<p>下面主要说另一种把 ijkplayer 打包成framework导入工程中使用. 
+首先打开工程IJKMediaPlayer.xcodeproj,<img src="http://upload-images.jianshu.io/upload_images/1803339-607cc84c212faf90.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IJKMediaPlayer.xcodeproj" /></p>
+
+<p>选择IJKMediaFramework点击EditScheme<img src="http://upload-images.jianshu.io/upload_images/1803339-bbc0adc479cebb69.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<p>选择release<img src="http://upload-images.jianshu.io/upload_images/1803339-daa4498f7e0746d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<p>设置好 scheme 后, 分别选择真机和模拟器进行编译, 编译完成后, 进入 Finder,<img src="http://upload-images.jianshu.io/upload_images/1803339-344cda905745ff39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<p>下面开始合并真机和模拟器版本的 framework, 注意不要合并错了, 合并的是这个文件, 如下图:<img src="http://upload-images.jianshu.io/upload_images/1803339-ec00ef4cb15c66d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<p>打开终端, 进行合并, 命令行具体格式为:
+lipo -create 真机版本路径 模拟器版本路径 -output 合并后的文件路径</p>
+
+<p>合并后如下图<img src="http://upload-images.jianshu.io/upload_images/1803339-d025e12bf804ee05.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<p>用合并后的IJKMediaFramework把原来的IJKMediaFramework替换掉<img src="http://upload-images.jianshu.io/upload_images/1803339-8d228ab56eb77f43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<h2 id="五在ios项目中集成ijkplayer">五、在iOS项目中集成ijkplayer</h2>
+<p>新建工程, 导入合并后的IJKMediaFramework.framework以及相关依赖框架以及相关依赖框架,如下图:
+<img src="https://storage1.cuntuku.com/2017/08/31/5.png" alt="5.png" /></p>
+
+<p>导入框架后在ViewController.m中进行buid，如果成功，说明集成成功。然后可以在控制器中写一个Demo测试<img src="https://storage1.cuntuku.com/2017/08/31/Snip20170831_10.png" alt="Snip20170831_10.png" />
+可以是mp4格式，也可以是m3u8,rtmp,hls等流媒体</p>
+
+<blockquote>
+  <p><a href="https://github.com/OrageKK/ijkPlayerDemo">demo地址</a></p>
+</blockquote>
+:ET

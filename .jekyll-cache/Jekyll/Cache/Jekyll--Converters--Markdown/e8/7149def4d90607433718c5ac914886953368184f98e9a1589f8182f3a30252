@@ -1,0 +1,112 @@
+I"�&<blockquote>
+  <p>接上篇 <a href="https://oragekk.me/08-25-2019/react2.html">ReactNative 认知（二）</a></p>
+</blockquote>
+
+<h2 id="reactnative-state状态">ReactNative State(状态)</h2>
+
+<h3 id="概念">概念</h3>
+
+<p>通俗来讲，一个组件，或者一个视图，他们都是Component，Component用两个最重要的东西，一个<code class="highlighter-rouge">props</code></p>
+
+<p>一个<code class="highlighter-rouge">state</code></p>
+
+<p>我们使用两种数据来控制一个组件：<code class="highlighter-rouge">props</code>和<code class="highlighter-rouge">state</code>。<code class="highlighter-rouge">props</code>是在父组件中指定，而且一经指定，在被指定的组件的生命周期中则不再改变。(<code class="highlighter-rouge">props</code>就像一个类的初始化属性一样，只有在创建时可以赋值，并且组件内部不可修改，也就是<code class="highlighter-rouge">readonly</code>)</p>
+
+<p>对于需要改变的数据，我们需要使用<code class="highlighter-rouge">state</code>。也可以把<code class="highlighter-rouge">state</code>理解为一个状态机，对于那些需要改变的数据可以使用<code class="highlighter-rouge">state</code>来更改，比如网络接口拿回来的数据，可以放在<code class="highlighter-rouge">state</code>里，当需要改变的时候只需要调用<code class="highlighter-rouge">setState</code>即可</p>
+
+<h3 id="使用">使用</h3>
+
+<p>一般来说，你需要在class中声明一个<code class="highlighter-rouge">state</code>对象，然后在需要修改时调用<code class="highlighter-rouge">setState</code>方法。</p>
+
+<p>假如我们有一个弹窗，想要控制弹窗是不是显示，需要一个<code class="highlighter-rouge">modalVisible</code>属性，当更改它的值时从而使界面UI产生相应的变化</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 声明state对象</span>
+<span class="kr">interface</span> <span class="nx">IState</span> <span class="p">{</span>
+    <span class="nl">modalVisible</span><span class="p">:</span> <span class="nx">boolean</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="kd">class</span> <span class="nx">ModalMenu</span> <span class="kd">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span><span class="o">&lt;</span><span class="nx">IProps</span><span class="p">,</span><span class="nx">IState</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kd">constructor</span><span class="p">(</span><span class="na">props</span><span class="p">:</span> <span class="nx">IProps</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">(</span><span class="nx">props</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span> <span class="na">modalVisible</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+  
+  
+</code></pre></div></div>
+
+<p>另一种声明方式，声明在类内部，声明的同时，进行初始化</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">modalVisible</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">};</span>
+</code></pre></div></div>
+<p>使用<code class="highlighter-rouge">this.state.modalVisible</code>来控制组件是否显示</p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="o">&lt;</span><span class="nx">Modal</span>
+                <span class="nx">animationType</span><span class="o">=</span><span class="dl">"</span><span class="s2">fade</span><span class="dl">"</span>
+                <span class="nx">transparent</span><span class="o">=</span><span class="p">{</span><span class="kc">true</span><span class="p">}</span>
+                <span class="nx">visible</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">modalVisible</span><span class="p">}</span>
+                <span class="nx">onRequestClose</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+                    <span class="k">this</span><span class="p">.</span><span class="nx">setModalVisible</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+                <span class="p">}}</span>
+            <span class="o">&gt;</span>
+               
+        <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>更新组件状态使用</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span> <span class="na">modalVisible</span><span class="p">:</span> <span class="kc">true</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="注意点">注意点</h3>
+
+<p>实际开发中，我们一般不会在定时器函数（setInterval、setTimeout 等）中来操作 state。典型的场景是在接收到服务器返回的新数据，或者在用户输入数据之后。你也可以使用一些“状态容器”比如<a href="http://redux.js.org/index.html">Redux</a>来统一管理数据流。</p>
+
+<p>每次调用<code class="highlighter-rouge">setState</code>时，BlinkApp 都会重新执行 render 方法重新渲染。</p>
+
+<ul>
+  <li>render（）中UI的变化只有当绑定的state中的某个属性变化后，才会变化</li>
+  <li>一切界面变化都是<code class="highlighter-rouge">状态state变化</code></li>
+  <li><code class="highlighter-rouge">state</code>的修改必须通过<code class="highlighter-rouge">setState()</code>方法
+    <ul>
+      <li>this.state.likes = 100; // 这样的<code class="highlighter-rouge">直接赋值修改无效！</code></li>
+      <li>setState 是一个 merge 合并操作，只修改指定属性，不影响其他属性</li>
+      <li>setState 是<code class="highlighter-rouge">异步</code>操作，修改<code class="highlighter-rouge">不会马上生效</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>我们可以看到<code class="highlighter-rouge">setState</code>内部的声明</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">setState</span><span class="o">&lt;</span><span class="nx">K</span> <span class="kd">extends</span> <span class="nx">keyof</span> <span class="nx">S</span><span class="o">&gt;</span><span class="p">(</span>
+            <span class="nx">state</span><span class="p">:</span> <span class="p">((</span><span class="nx">prevState</span><span class="p">:</span> <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">S</span><span class="o">&gt;</span><span class="p">,</span> <span class="nx">props</span><span class="p">:</span> <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">P</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">Pick</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;</span> <span class="o">|</span> <span class="nx">S</span> <span class="o">|</span> <span class="kc">null</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="nx">Pick</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;</span> <span class="o">|</span> <span class="nx">S</span> <span class="o">|</span> <span class="kc">null</span><span class="p">),</span>
+            <span class="nx">callback</span><span class="p">?:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">void</span>
+        <span class="p">):</span> <span class="k">void</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>如果想要同步使用，我们可以使用第二个参数callback?它是可选的</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span> <span class="na">modalVisible</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},()</span><span class="o">=&gt;</span><span class="p">{</span>
+            <span class="c1">// 这里是同步的</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<hr />
+
+<p>参考资料：</p>
+
+<p><a href="https://reactnative.cn/docs/layout-props/#justifycontent">官方文档</a></p>
+
+<p><a href="https://www.jianshu.com/p/ae0a9ec1f8d6?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">ES6 延展操作符（…）</a></p>
+
+<p><a href="https://www.tslang.cn/docs/home.html">typeScriptg中文文档</a></p>
+
+<p><a href="https://www.imooc.com/video/14286">ReactNative入门与进阶</a></p>
+
+<p><a href="[https://docs.nativebase.io](https://docs.nativebase.io/)">https://docs.nativebase.io </a></p>
+
+:ET

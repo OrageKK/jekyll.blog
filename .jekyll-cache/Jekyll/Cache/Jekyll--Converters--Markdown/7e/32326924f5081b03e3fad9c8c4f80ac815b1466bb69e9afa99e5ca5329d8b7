@@ -1,0 +1,145 @@
+I"*;<blockquote>
+  <p>最近一直在忙，今天抽空写一下H5和Native的交互</p>
+</blockquote>
+
+<h2 id="一选择">一、选择</h2>
+<ul>
+  <li>项目本身webview使用的是WKWebview，其实WKWebview自带的messageHandle也可以满足此需求</li>
+  <li>JSContext,源自于JavaScriptCore框架中的东西，最后不使用此方案源于一下几点
+    <ul>
+      <li>但是其中繁杂的字符串使用，让我觉的可能会由于粗心出现不可预知的错误</li>
+      <li>加载时机的问题，当你重新loadrequest的时候，会导致js注入失败</li>
+      <li>回调方法略复杂</li>
+    </ul>
+  </li>
+  <li>JavaScriptBridge，最后选择此库源于以下几点
+    <ul>
+      <li>使用简单，注册完毕之后设置完代理，只需要负责注册方法和调用方法</li>
+      <li>回调简单，两端回调responsecallback包含在注册的方法中。使用block</li>
+      <li>三端通用，JavaScript和iOS、Android都可以（<a href="https://github.com/wendux/WebViewJavascriptBridge">Android版本库</a>）</li>
+      <li>Ps :关于Android版本库，其中很多是按照iOS版的JavaScriptBridge改写的。但是其中有很多问题，尤其是各种调用时机问题，上面的链接是经过我旁边的Android小哥试了四五个版本之后发现的，修复了各种改写版的问题</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="二使用">二、使用</h2>
+
+<ul>
+  <li>首先需要引入WebViewJavascriptBridge库</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#import "WebViewJavascriptBridge.h"
+</span></code></pre></div></div>
+<ul>
+  <li>初始化，此处为了方便子类使用，所以在基类中注册bridge，并return bridge对象，方便子类调用</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma mark - 桥接
+</span>
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">InitializeWebViewJavascriptBridge</span> <span class="p">{</span>
+    <span class="c1">// 注册桥接</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">bridge</span> <span class="o">=</span> <span class="p">[</span><span class="n">SWHybridManager</span> <span class="nf">setJavaScriptBridgeWithWebView</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">webView</span> <span class="nf">controller</span><span class="p">:</span><span class="n">self</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="p">[</span><span class="n">WKWebViewJavascriptBridge</span> <span class="nf">enableLogging</span><span class="p">];</span>
+<span class="n">WKWebViewJavascriptBridge</span> <span class="o">*</span><span class="n">bridge</span> <span class="o">=</span> <span class="p">[</span><span class="n">WKWebViewJavascriptBridge</span> <span class="nf">bridgeForWebView</span><span class="p">:</span><span class="n">webView</span><span class="p">];</span>
+<span class="p">[</span><span class="n">bridge</span> <span class="nf">setWebViewDelegate</span><span class="p">:</span><span class="n">controller</span><span class="p">];</span>
+</code></pre></div></div>
+<ul>
+  <li>注册方法供JavaScript调用</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__weak</span> <span class="n">typeof</span><span class="p">(</span><span class="n">controller</span><span class="p">)</span><span class="n">wController</span> <span class="o">=</span> <span class="n">controller</span><span class="p">;</span>
+<span class="cm">/****************************公共方法注册-Start*********************/</span>
+    <span class="c1">//MARK:打开窗体</span>
+    <span class="p">[</span><span class="n">bridge</span> <span class="nf">registerHandler</span><span class="p">:</span><span class="n">HandlerFunctionNameOpenWindow</span> <span class="nf">handler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">id</span> <span class="n">data</span><span class="p">,</span> <span class="n">WVJBResponseCallback</span> <span class="n">responseCallback</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">__strong</span> <span class="n">typeof</span><span class="p">(</span><span class="n">wController</span><span class="p">)</span><span class="n">sController</span> <span class="o">=</span> <span class="n">wController</span><span class="p">;</span>
+        <span class="n">NSLog</span><span class="p">(</span><span class="s">@"</span><span class="se">\n</span><span class="s">调用了openWindow: %@"</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+        <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dict</span> <span class="o">=</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>
+        <span class="n">SWOpenWindowModel</span> <span class="o">*</span><span class="n">model</span> <span class="o">=</span> <span class="p">[</span><span class="n">SWOpenWindowModel</span> <span class="nf">yy_modelWithDictionary</span><span class="p">:</span><span class="n">dict</span><span class="p">];</span>
+        <span class="p">[</span><span class="n">self</span> <span class="nf">pushViewController</span><span class="p">:</span><span class="n">sController</span> <span class="nf">data</span><span class="p">:</span><span class="n">model</span> <span class="n">responseCallback</span><span class="o">:</span><span class="n">responseCallback</span><span class="p">];</span>
+    <span class="p">}];</span>
+</code></pre></div></div>
+<ul>
+  <li>调用JavaScript方法</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">bridge</span> <span class="nf">callHandler</span><span class="p">:</span><span class="n">callFunctionNameGetSearchKeyWord</span> <span class="nf">data</span><span class="p">:</span><span class="n">json</span><span class="p">];</span>
+</code></pre></div></div>
+
+<h2 id="三方法名定义">三、方法名定义</h2>
+
+<ul>
+  <li>因为方法名的定义是字符串，所以建议采用常量字符串，防止拼写错误</li>
+  <li>其次不建议采用宏定义</li>
+  <li>我采用以下方法</li>
+  <li>桥接管理类的.h</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**打开窗体 */</span>
+<span class="n">FOUNDATION_EXPORT</span>  <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">HandlerFunctionNameOpenWindow</span><span class="p">;</span>
+<span class="cm">/** 关闭窗口*/</span>
+<span class="n">FOUNDATION_EXPORT</span>  <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">HandlerFunctionNameCloseWindow</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>桥接管理类的.m</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**打开窗体 */</span>
+<span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">HandlerFunctionNameOpenWindow</span> <span class="o">=</span> <span class="s">@"openWindow"</span><span class="p">;</span>
+<span class="cm">/** 关闭窗口*/</span>
+<span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">HandlerFunctionNameCloseWindow</span> <span class="o">=</span> <span class="s">@"closeWindow"</span><span class="p">;</span>
+</code></pre></div></div>
+<ul>
+  <li>使用时直接使用常量字符串即可</li>
+  <li>注意点：如类似我使用在基类传入控制器和webview到管理类中，在类中使用controller要注意循环引用，否则会导致控制器无法释放</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">+</span> <span class="p">(</span><span class="n">WKWebViewJavascriptBridge</span> <span class="o">*</span><span class="p">)</span><span class="nf">setJavaScriptBridgeWithWebView</span><span class="p">:(</span><span class="n">WKWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span> <span class="nf">controller</span><span class="p">:(</span><span class="n">__kindof</span> <span class="n">SWBaseWebViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">controller</span><span class="p">;</span>
+
+<span class="n">__weak</span> <span class="n">typeof</span><span class="p">(</span><span class="n">controller</span><span class="p">)</span><span class="n">wController</span> <span class="o">=</span> <span class="n">controller</span><span class="p">;</span> <span class="c1">// 弱引用传入控制器</span>
+<span class="n">__strong</span> <span class="n">typeof</span><span class="p">(</span><span class="n">wController</span><span class="p">)</span><span class="n">sController</span> <span class="o">=</span> <span class="n">wController</span><span class="p">;</span> <span class="c1">// 在block内部强引用</span>
+</code></pre></div></div>
+<h2 id="四数据传输">四、数据传输</h2>
+
+<ul>
+  <li>iOS端直接返回字典即可</li>
+  <li>我代码中是返回json字符串，为了与Android统一，方便H5解析数据</li>
+</ul>
+
+<h2 id="五javascript代码">五、JavaScript代码</h2>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setupWebViewJavascriptBridge</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">WebViewJavascriptBridge</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">WebViewJavascriptBridge</span><span class="p">);</span> <span class="p">}</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">WVJBCallbacks</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">WVJBCallbacks</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">callback</span><span class="p">);</span> <span class="p">}</span>
+	<span class="nb">window</span><span class="p">.</span><span class="nx">WVJBCallbacks</span> <span class="o">=</span> <span class="p">[</span><span class="nx">callback</span><span class="p">];</span>
+	<span class="kd">var</span> <span class="nx">WVJBIframe</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">'</span><span class="s1">iframe</span><span class="dl">'</span><span class="p">);</span>
+	<span class="nx">WVJBIframe</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">none</span><span class="dl">'</span><span class="p">;</span>
+	<span class="nx">WVJBIframe</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://__bridge_loaded__</span><span class="dl">'</span><span class="p">;</span>
+	<span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">WVJBIframe</span><span class="p">);</span>
+	<span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">WVJBIframe</span><span class="p">)</span> <span class="p">},</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">setupWebViewJavascriptBridge</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">bridge</span><span class="p">)</span> <span class="p">{</span>
+	
+	<span class="cm">/* Initialize your app here */</span>
+
+	<span class="nx">bridge</span><span class="p">.</span><span class="nx">registerHandler</span><span class="p">(</span><span class="dl">'</span><span class="s1">JS Echo</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">responseCallback</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">JS Echo called with:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
+		<span class="nx">responseCallback</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+	<span class="p">})</span>
+	<span class="nx">bridge</span><span class="p">.</span><span class="nx">callHandler</span><span class="p">(</span><span class="dl">'</span><span class="s1">ObjC Echo</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="dl">'</span><span class="s1">key</span><span class="dl">'</span><span class="p">:</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">},</span> <span class="kd">function</span> <span class="nx">responseCallback</span><span class="p">(</span><span class="nx">responseData</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">JS received response:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">responseData</span><span class="p">)</span>
+	<span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div></div>
+
+<h2 id="六注意事项">六、注意事项</h2>
+
+<ul>
+  <li>如果产生调用不通的问题，多为JavaScript调用时机问题</li>
+  <li>注意桥接的代理</li>
+</ul>
+:ET

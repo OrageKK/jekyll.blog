@@ -1,0 +1,16 @@
+I"g<blockquote>
+  <p>使用runtime进行归档，对我们的最大遍历就是高效，快速。尤其适用于model中属性非常多的时候</p>
+</blockquote>
+
+<h2 id="personh">Person.h</h2>
+<p><img src="http://i2.muimg.com/567571/e2afe593e10c0c78.png" alt="" /></p>
+
+<h2 id="personm">person.m</h2>
+<p><img src="http://i4.buimg.com/567571/713e554a5fd04e13.png" alt="" /></p>
+
+<h2 id="viewcontrollerm">viewController.m</h2>
+<p><img src="http://i1.piimg.com/567571/0333be9f5d16fd96.png" alt="" /></p>
+
+<h2 id="printresult">printResult</h2>
+<p><img src="http://i4.buimg.com/567571/5b12de7ec090769f.png" alt="" /></p>
+:ET

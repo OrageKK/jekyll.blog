@@ -1,0 +1,78 @@
+I"�<p><img src="http://upload-images.jianshu.io/upload_images/2076247-3121ed2223eb346c.gif?imageMogr2/auto-orient/strip" alt="萌妹.gif" /></p>
+
+<blockquote>
+  <p>已被此妹萌哭，好了，废话不多说，进入正题，今天介绍一下objective-c中的枚举</p>
+</blockquote>
+
+<h3 id="提要">提要</h3>
+<ul>
+  <li>首先要知道的是,枚举值 它是一个整形(int) 并且,它不参加内存的占用和释放 枚举定义变量即可直接使用,不用初始化</li>
+  <li>三种类型的枚举
+    <ul>
+      <li><strong>enum</strong> 在iOS6之前一般我们采用C风格的enum关键字可以定义枚举类型</li>
+    </ul>
+
+    <p>在iOS6之后引入两个宏来定义枚举实际上是将enum定义和typedef合二为一，并且采用不同的宏来从代码角度来区分。</p>
+
+    <ul>
+      <li>
+        <p><strong>NS_ENUM</strong>  普通枚举定义可参见UIKit.Framework中</p>
+      </li>
+      <li>
+        <p><strong>NS_OPTIONS</strong>  位运算及特殊枚举的定义。什么时候要用到这种方式呢? 那就是一个枚举变量可能要代表多个枚举值的时候. 其实给一个枚举变量赋予多个枚举值的时候,原理只是把各个枚举值加起来罢了. 当加起来以后,就获取了一个新的值,那么为了保证这个值的唯一性,这个时候就体现了位运算的重要作用. 位运算可以确保枚举值组合的唯一性. 因为位运算的计算方式是将二进制转换成十进制,也就是说,枚举值里面存取的是 计算后的十进制值. 打个比方: 通过上面的位运算方式设定好枚举以后,打印出来的枚举值分别是: 1 2 4 8 16 这5个数字,无论你如何组合在一起,也不会产生两个同样的数字.</p>
+      </li>
+    </ul>
+
+    <p>这两个宏的定义在Foundation.framework的NSObjCRuntime.h中：</p>
+  </li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  		<span class="cp">#if (__cplusplus &amp;&amp; __cplusplus &gt;= 201103L &amp;&amp; (__has_extension(cxx_strong_enums) || __has_feature(objc_fixed_enum))) || (!__cplusplus &amp;&amp; __has_feature(objc_fixed_enum))
+</span>		<span class="cp">#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
+</span>		<span class="cp">#if (__cplusplu 
+</span>		<span class="cp">#define NS_OPTIONS(_type, _name) _type _name; enum : _type  
+</span>		<span class="cp">#else  
+</span>		<span class="cp">#define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type  
+</span>		<span class="cp">#endif  
+</span>		<span class="cp">#else  
+</span>		<span class="cp">#define NS_ENUM(_type, _name) _type _name; enum  
+</span>				<span class="cp">#define NS_OPTIONS(_type, _name) _type _name; enum  
+</span>		<span class="cp">#endif  
+</span></code></pre></div></div>
+<h3 id="举个">举个🌰</h3>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">//推荐的定义枚举类型的方式</span>
+    <span class="k">typedef</span> <span class="nf">NS_ENUM</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">,</span> <span class="n">RWTLeftMenuTopItemType</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">RWTLeftMenuTopItemMain</span><span class="p">,</span> 
+     <span class="n">RWTLeftMenuTopItemShows</span><span class="p">,</span>
+     <span class="n">RWTLeftMenuTopItemSchedule</span> 
+    <span class="p">};</span> 
+    <span class="k">typedef</span> <span class="nf">NS_ENUM</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">,</span> <span class="n">RWTGlobalConstants</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="n">RWTPinSizeMin</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="n">RWTPinSizeMax</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> 
+    <span class="n">RWTPinCountMin</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> 
+    <span class="n">RWTPinCountMax</span> <span class="o">=</span> <span class="mi">500</span>
+    <span class="p">};</span> 
+    <span class="k">typedef</span> <span class="nf">NS_OPTIONS</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">,</span> <span class="n">Test</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="n">TestA</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">//1 1 1等于号后面必须等于1</span>
+
+    <span class="n">TestB</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">//2 2 10 转换成 10进制 2</span>
+
+    <span class="n">TestC</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">//4 3 100 转换成 10进制 4</span>
+
+    <span class="n">TestD</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">//8 4 1000 转换成 10进制 8</span>
+
+    <span class="n">TestE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span> <span class="c1">//16 5 10000 转换成 10进制 16</span>
+
+    <span class="p">};</span>
+    <span class="c1">//不推荐的方式</span>
+    <span class="k">enum</span> <span class="n">GlobalConstants</span> <span class="p">{</span> 
+    <span class="n">kMaxPinSize</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> 
+    <span class="n">kMaxPinCount</span> <span class="o">=</span> <span class="mi">500</span>
+    <span class="p">};</span>
+</code></pre></div></div>
+<blockquote>
+  <p>共同学习共同进步，加油。fighting😆</p>
+</blockquote>
+:ET

@@ -1,0 +1,283 @@
+I":w<blockquote>
+  <p>前言</p>
+
+  <p>整理一下在iOS开发中NSError的错误代码</p>
+</blockquote>
+
+<h2 id="nserror">NSError</h2>
+
+<p>NSError是系统错误信息类</p>
+
+<p>初始化方法两个</p>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">// domain 不能为空 dict可以为空</span>
+  
+  <span class="k">-</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">initWithDomain</span><span class="p">:(</span><span class="n">NSErrorDomain</span><span class="p">)</span><span class="nv">domain</span> <span class="nf">code</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">code</span> <span class="nf">userInfo</span><span class="p">:(</span><span class="n">nullable</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dict</span><span class="p">;</span>
+
+  <span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">errorWithDomain</span><span class="p">:(</span><span class="n">NSErrorDomain</span><span class="p">)</span><span class="nv">domain</span> <span class="nf">code</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">code</span> <span class="nf">userInfo</span><span class="p">:(</span><span class="n">nullable</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dict</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="属性">属性</h3>
+
+<ul>
+  <li>
+    <p>@property (readonly) NSInteger code;//错误代码</p>
+  </li>
+  <li>
+    <p>@property (readonly, copy) NSDictionary *userInfo;//错误信息</p>
+  </li>
+  <li>
+    <p>@property (readonly, copy) NSString *localizedDescription;//获取本地化描述</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSString *localizedFailureReason;//获取失败原因</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSString *localizedRecoverySuggestion;//获取恢复建议</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSArray&lt;NSString *&gt; *localizedRecoveryOptions;本地恢复建议</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, strong) id recoveryAttempter;</p>
+  </li>
+  <li>
+    <p>@property (nullable, readonly, copy) NSString *helpAnchor;</p>
+  </li>
+</ul>
+
+<h3 id="nserror错误code对照表">NSError错误code对照表</h3>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">NSError</span> <span class="n">codes</span> <span class="k">in</span> <span class="n">the</span> <span class="n">Cocoa</span> <span class="n">error</span> <span class="n">domain</span><span class="p">.</span>
+
+<span class="k">enum</span> <span class="p">{</span>
+ <span class="n">NSFileNoSuchFileError</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+ <span class="n">NSFileLockingError</span> <span class="o">=</span> <span class="mi">255</span><span class="p">,</span>
+ <span class="n">NSFileReadUnknownError</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+ <span class="n">NSFileReadNoPermissionError</span> <span class="o">=</span> <span class="mi">257</span><span class="p">,</span>
+ <span class="n">NSFileReadInvalidFileNameError</span> <span class="o">=</span> <span class="mi">258</span><span class="p">,</span>
+ <span class="n">NSFileReadCorruptFileError</span> <span class="o">=</span> <span class="mi">259</span><span class="p">,</span>
+ <span class="n">NSFileReadNoSuchFileError</span> <span class="o">=</span> <span class="mi">260</span><span class="p">,</span>
+ <span class="n">NSFileReadInapplicableStringEncodingError</span> <span class="o">=</span> <span class="mi">261</span><span class="p">,</span>
+ <span class="n">NSFileReadUnsupportedSchemeError</span> <span class="o">=</span> <span class="mi">262</span><span class="p">,</span>
+ <span class="n">NSFileReadTooLargeError</span> <span class="o">=</span> <span class="mi">263</span><span class="p">,</span>
+ <span class="n">NSFileReadUnknownStringEncodingError</span> <span class="o">=</span> <span class="mi">264</span><span class="p">,</span>
+ <span class="n">NSFileWriteUnknownError</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
+ <span class="n">NSFileWriteNoPermissionError</span> <span class="o">=</span> <span class="mi">513</span><span class="p">,</span>
+ <span class="n">NSFileWriteInvalidFileNameError</span> <span class="o">=</span> <span class="mi">514</span><span class="p">,</span>
+ <span class="n">NSFileWriteInapplicableStringEncodingError</span> <span class="o">=</span> <span class="mi">517</span><span class="p">,</span>
+ <span class="n">NSFileWriteUnsupportedSchemeError</span> <span class="o">=</span> <span class="mi">518</span><span class="p">,</span>
+ <span class="n">NSFileWriteOutOfSpaceError</span> <span class="o">=</span> <span class="mi">640</span><span class="p">,</span>
+ <span class="n">NSFileWriteVolumeReadOnlyError</span> <span class="o">=</span> <span class="mi">642</span><span class="n">m</span>
+ <span class="n">NSKeyValueValidationError</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+ <span class="n">NSFormattingError</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
+ <span class="n">NSUserCancelledError</span> <span class="o">=</span> <span class="mi">3072</span><span class="p">,</span>
+
+<span class="n">NSFileErrorMinimum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+ <span class="n">NSFileErrorMaximum</span> <span class="o">=</span> <span class="mi">1023</span><span class="p">,</span>
+ <span class="n">NSValidationErrorMinimum</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+ <span class="n">NSValidationErrorMaximum</span> <span class="o">=</span> <span class="mi">2047</span><span class="p">,</span>
+ <span class="n">NSFormattingErrorMinimum</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
+ <span class="n">NSFormattingErrorMaximum</span> <span class="o">=</span> <span class="mi">2559</span><span class="p">,</span>
+
+<span class="n">NSPropertyListReadCorruptError</span> <span class="o">=</span> <span class="mi">3840</span><span class="p">,</span>
+ <span class="n">NSPropertyListReadUnknownVersionError</span> <span class="o">=</span> <span class="mi">3841</span><span class="p">,</span>
+ <span class="n">NSPropertyListReadStreamError</span> <span class="o">=</span> <span class="mi">3842</span><span class="p">,</span>
+ <span class="n">NSPropertyListWriteStreamError</span> <span class="o">=</span> <span class="mi">3851</span><span class="p">,</span>
+ <span class="n">NSPropertyListErrorMinimum</span> <span class="o">=</span> <span class="mi">3840</span><span class="p">,</span>
+ <span class="n">NSPropertyListErrorMaximum</span> <span class="o">=</span> <span class="mi">4095</span>
+
+<span class="n">NSExecutableErrorMinimum</span> <span class="o">=</span> <span class="mi">3584</span><span class="p">,</span>
+ <span class="n">NSExecutableNotLoadableError</span> <span class="o">=</span> <span class="mi">3584</span><span class="p">,</span>
+ <span class="n">NSExecutableArchitectureMismatchError</span> <span class="o">=</span> <span class="mi">3585</span><span class="p">,</span>
+ <span class="n">NSExecutableRuntimeMismatchError</span> <span class="o">=</span> <span class="mi">3586</span><span class="p">,</span>
+ <span class="n">NSExecutableLoadError</span> <span class="o">=</span> <span class="mi">3587</span><span class="p">,</span>
+ <span class="n">NSExecutableLinkError</span> <span class="o">=</span> <span class="mi">3588</span><span class="p">,</span>
+ <span class="n">NSExecutableErrorMaximum</span> <span class="o">=</span> <span class="mi">3839</span><span class="p">,</span>
+
+<span class="p">}</span>
+ <span class="n">URL</span> <span class="n">Loading</span> <span class="n">System</span> <span class="n">Error</span> <span class="n">Codes</span>
+
+<span class="n">These</span> <span class="n">values</span> <span class="n">are</span> <span class="n">returned</span> <span class="n">as</span> <span class="n">the</span> <span class="n">error</span> <span class="n">code</span> <span class="n">property</span> <span class="n">of</span> <span class="n">an</span> <span class="n">NSError</span> <span class="n">object</span> <span class="n">with</span> <span class="n">the</span> <span class="n">domain</span> <span class="err">“</span><span class="n">NSURLErrorDomain</span><span class="err">”</span><span class="p">.</span>
+
+<span class="k">typedef</span> <span class="k">enum</span>
+ <span class="p">{</span>
+ <span class="n">NSURLErrorUnknown</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+ <span class="n">NSURLErrorCancelled</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span><span class="p">,</span>
+ <span class="n">NSURLErrorBadURL</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span>
+ <span class="n">NSURLErrorTimedOut</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1001</span><span class="p">,</span>
+ <span class="n">NSURLErrorUnsupportedURL</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1002</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotFindHost</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1003</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotConnectToHost</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1004</span><span class="p">,</span>
+ <span class="n">NSURLErrorDataLengthExceedsMaximum</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1103</span><span class="p">,</span>
+ <span class="n">NSURLErrorNetworkConnectionLost</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1005</span><span class="p">,</span>
+ <span class="n">NSURLErrorDNSLookupFailed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1006</span><span class="p">,</span>
+ <span class="n">NSURLErrorHTTPTooManyRedirects</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1007</span><span class="p">,</span>
+ <span class="n">NSURLErrorResourceUnavailable</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1008</span><span class="p">,</span>
+ <span class="n">NSURLErrorNotConnectedToInternet</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1009</span><span class="p">,</span>
+ <span class="n">NSURLErrorRedirectToNonExistentLocation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1010</span><span class="p">,</span>
+ <span class="n">NSURLErrorBadServerResponse</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1011</span><span class="p">,</span>
+ <span class="n">NSURLErrorUserCancelledAuthentication</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1012</span><span class="p">,</span>
+ <span class="n">NSURLErrorUserAuthenticationRequired</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1013</span><span class="p">,</span>
+ <span class="n">NSURLErrorZeroByteResource</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1014</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotDecodeRawData</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1015</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotDecodeContentData</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1016</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotParseResponse</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1017</span><span class="p">,</span>
+ <span class="n">NSURLErrorFileDoesNotExist</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1100</span><span class="p">,</span>
+ <span class="n">NSURLErrorFileIsDirectory</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1101</span><span class="p">,</span>
+ <span class="n">NSURLErrorNoPermissionsToReadFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1102</span><span class="p">,</span>
+ <span class="n">NSURLErrorSecureConnectionFailed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1200</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateHasBadDate</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1201</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateUntrusted</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1202</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateHasUnknownRoot</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1203</span><span class="p">,</span>
+ <span class="n">NSURLErrorServerCertificateNotYetValid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1204</span><span class="p">,</span>
+ <span class="n">NSURLErrorClientCertificateRejected</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1205</span><span class="p">,</span>
+ <span class="n">NSURLErrorClientCertificateRequired</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1206</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotLoadFromNetwork</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2000</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotCreateFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3000</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotOpenFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3001</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotCloseFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3002</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotWriteToFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3003</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotRemoveFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3004</span><span class="p">,</span>
+ <span class="n">NSURLErrorCannotMoveFile</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3005</span><span class="p">,</span>
+ <span class="n">NSURLErrorDownloadDecodingFailedMidStream</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3006</span><span class="p">,</span>
+ <span class="n">NSURLErrorDownloadDecodingFailedToComplete</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3007</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="有关网络请求失败的解释">有关网络请求失败的解释</h3>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="c1">//NSURLErrorUnknown</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无效的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">999</span><span class="p">:</span><span class="c1">//NSURLErrorCancelled</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无效的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1000</span><span class="p">:</span><span class="c1">//NSURLErrorBadURL</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无效的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1001</span><span class="p">:</span><span class="c1">//NSURLErrorTimedOut</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"网络不给力，请稍后再试"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1002</span><span class="p">:</span><span class="c1">//NSURLErrorUnsupportedURL</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"不支持的URL地址"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1003</span><span class="p">:</span><span class="c1">//NSURLErrorCannotFindHost</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"找不到服务器"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1004</span><span class="p">:</span><span class="c1">//NSURLErrorCannotConnectToHost</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"连接不上服务器"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1103</span><span class="p">:</span><span class="c1">//NSURLErrorDataLengthExceedsMaximum</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"请求数据长度超出最大限度"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1005</span><span class="p">:</span><span class="c1">//NSURLErrorNetworkConnectionLost</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"网络连接异常"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1006</span><span class="p">:</span><span class="c1">//NSURLErrorDNSLookupFailed</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"DNS查询失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1007</span><span class="p">:</span><span class="c1">//NSURLErrorHTTPTooManyRedirects</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"HTTP请求重定向"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1008</span><span class="p">:</span><span class="c1">//NSURLErrorResourceUnavailable</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"资源不可用"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1009</span><span class="p">:</span><span class="c1">//NSURLErrorNotConnectedToInternet</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无网络连接"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1010</span><span class="p">:</span><span class="c1">//NSURLErrorRedirectToNonExistentLocation</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"重定向到不存在的位置"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1011</span><span class="p">:</span><span class="c1">//NSURLErrorBadServerResponse</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"服务器响应异常"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1012</span><span class="p">:</span><span class="c1">//NSURLErrorUserCancelledAuthentication</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"用户取消授权"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1013</span><span class="p">:</span><span class="c1">//NSURLErrorUserAuthenticationRequired</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"需要用户授权"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1014</span><span class="p">:</span><span class="c1">//NSURLErrorZeroByteResource</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"零字节资源"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1015</span><span class="p">:</span><span class="c1">//NSURLErrorCannotDecodeRawData</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法解码原始数据"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1016</span><span class="p">:</span><span class="c1">//NSURLErrorCannotDecodeContentData</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法解码内容数据"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1017</span><span class="p">:</span><span class="c1">//NSURLErrorCannotParseResponse</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法解析响应"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1018</span><span class="p">:</span><span class="c1">//NSURLErrorInternationalRoamingOff</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"国际漫游关闭"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1019</span><span class="p">:</span><span class="c1">//NSURLErrorCallIsActive</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"被叫激活"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1020</span><span class="p">:</span><span class="c1">//NSURLErrorDataNotAllowed</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"数据不被允许"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1021</span><span class="p">:</span><span class="c1">//NSURLErrorRequestBodyStreamExhausted</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"请求体"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1100</span><span class="p">:</span><span class="c1">//NSURLErrorFileDoesNotExist</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"文件不存在"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1101</span><span class="p">:</span><span class="c1">//NSURLErrorFileIsDirectory</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"文件是个目录"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1102</span><span class="p">:</span><span class="c1">//NSURLErrorNoPermissionsToReadFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无读取文件权限"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1200</span><span class="p">:</span><span class="c1">//NSURLErrorSecureConnectionFailed</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"安全连接失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1201</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateHasBadDate</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"服务器证书失效"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1202</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateUntrusted</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"不被信任的服务器证书"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1203</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateHasUnknownRoot</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"未知Root的服务器证书"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1204</span><span class="p">:</span><span class="c1">//NSURLErrorServerCertificateNotYetValid</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"服务器证书未生效"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1205</span><span class="p">:</span><span class="c1">//NSURLErrorClientCertificateRejected</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"客户端证书被拒"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">1206</span><span class="p">:</span><span class="c1">//NSURLErrorClientCertificateRequired</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"需要客户端证书"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">2000</span><span class="p">:</span><span class="c1">//NSURLErrorCannotLoadFromNetwork</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法从网络获取"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3000</span><span class="p">:</span><span class="c1">//NSURLErrorCannotCreateFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法创建文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3001</span><span class="p">:</span><span class="c1">// NSURLErrorCannotOpenFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法打开文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3002</span><span class="p">:</span><span class="c1">//NSURLErrorCannotCloseFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法关闭文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3003</span><span class="p">:</span><span class="c1">//NSURLErrorCannotWriteToFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法写入文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3004</span><span class="p">:</span><span class="c1">//NSURLErrorCannotRemoveFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法删除文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3005</span><span class="p">:</span><span class="c1">//NSURLErrorCannotMoveFile</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"无法移动文件"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3006</span><span class="p">:</span><span class="c1">//NSURLErrorDownloadDecodingFailedMidStream</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"下载解码数据失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="o">-</span><span class="mi">3007</span><span class="p">:</span><span class="c1">//NSURLErrorDownloadDecodingFailedToComplete</span>
+<span class="n">errorMesg</span> <span class="o">=</span> <span class="s">@"下载解码数据失败"</span><span class="p">;</span>
+<span class="k">break</span><span class="p">;</span>
+</code></pre></div></div>
+:ET

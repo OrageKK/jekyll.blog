@@ -1,0 +1,60 @@
+I"q<blockquote>
+  <p>昨天试验了iOS 11 beta6 发现原有的https自建证书不能使用，可能是新版本要对ATS加强验证，之前一直说的要全面https估计在不久的将来就要来临，未接入的可能要像Apple说的不允许上架。所以把配置过程记录在此</p>
+</blockquote>
+
+<h2 id="要求">要求</h2>
+<p>启用ATS必须符合以下标准，不满足条件的HTTPS证书，ATS都会拒绝链接：</p>
+
+<ul>
+  <li>服务器所有的链接使用TLS1.2以上版本</li>
+  <li>HTTPS证书必须使用SHA 256以上哈希算法签名</li>
+  <li>HTTPS证书必须使用RAS 2048位或ECC 356位以上公钥算法</li>
+  <li>使用前向加密技术</li>
+</ul>
+
+<h2 id="afsecuritypolicy相关的配置">AFSecurityPolicy相关的配置</h2>
+<ul>
+  <li>
+    <p>SSLPinningMode
+  SSLPinningMode定义了https连接时，如何校验服务器端给予的证书</p>
+
+    <div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">typedef</span> <span class="nf">NS_ENUM</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">,</span> <span class="n">AFSSLPinningMode</span><span class="p">){</span>
+  <span class="n">AFSSLPinningModeNone</span><span class="p">,</span>
+  <span class="n">AFSSLPinningModePublicKey</span><span class="p">,</span>
+  <span class="n">AFSSLPinningModeCertificate</span><span class="p">,</span>
+  <span class="p">};</span>
+</code></pre></div>    </div>
+    <p>AFSSLPinningModeNone: 代表客户端无条件地信任服务器端返回的证书。</p>
+
+    <p>AFSSLPinningModePublicKey: 代表客户端会将服务器端返回的证书与本地保存的证书中，PublicKey的部分进行校验；如果正确，才继续进行。</p>
+
+    <p>AFSSLPinningModeCertificate: 代表客户端会将服务器端返回的证书和本地保存的证书中的所有内容，包括PublicKey和证书部分，全部进行校验；如果正确，才继续进行。</p>
+  </li>
+  <li>allowInvalidCertificates 是否支持自建证书默认NO 改为YES</li>
+  <li>validatesDomainName 是否进行域名验证 默认YES 改为NO</li>
+</ul>
+
+<h2 id="客户端配置">客户端配置</h2>
+
+<ul>
+  <li>
+    <p>首先导入证书到项目
+<a href="https://cuntuku.com/image/4xc6p"><img src="https://storage1.cuntuku.com/2017/08/16/daoru.md.png" alt="daoru.md.png" /></a>
+<a href="https://cuntuku.com/image/4xyN0"><img src="https://storage2.cuntuku.com/2017/08/16/phases.md.png" alt="phases.md.png" /></a></p>
+  </li>
+  <li>配置info.plist文件
+<a href="https://cuntuku.com/image/4xA2z"><img src="https://storage1.cuntuku.com/2017/08/16/infoplist.md.png" alt="infoplist.md.png" /></a></li>
+  <li>网络请求配置(AFN)</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">NSString</span> <span class="o">*</span><span class="n">cerPath</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="nf">mainBundle</span><span class="p">]</span> <span class="nf">pathForResource</span><span class="p">:</span><span class="s">@"UpopRsaCert"</span> <span class="nf">ofType</span><span class="p">:</span><span class="s">@"cer"</span><span class="p">];</span><span class="c1">//证书的路径</span>
+<span class="n">NSData</span> <span class="o">*</span><span class="n">certData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSData</span> <span class="nf">dataWithContentsOfFile</span><span class="p">:</span><span class="n">cerPath</span><span class="p">];</span>
+<span class="n">NSString</span> <span class="o">*</span><span class="n">cerPath2</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="nf">mainBundle</span><span class="p">]</span> <span class="nf">pathForResource</span><span class="p">:</span><span class="s">@"verify_sign_acp"</span> <span class="nf">ofType</span><span class="p">:</span><span class="s">@"cer"</span><span class="p">];</span><span class="c1">//证书的路径</span>
+<span class="n">NSData</span> <span class="o">*</span><span class="n">certData2</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSData</span> <span class="nf">dataWithContentsOfFile</span><span class="p">:</span><span class="n">cerPath2</span><span class="p">];</span>
+<span class="n">NSString</span> <span class="o">*</span><span class="n">cerPath3</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="nf">mainBundle</span><span class="p">]</span> <span class="nf">pathForResource</span><span class="p">:</span><span class="s">@"myWebsite"</span> <span class="nf">ofType</span><span class="p">:</span><span class="s">@"cer"</span><span class="p">];</span><span class="c1">//证书的路径</span>
+<span class="n">NSData</span> <span class="o">*</span><span class="n">certData3</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSData</span> <span class="nf">dataWithContentsOfFile</span><span class="p">:</span><span class="n">cerPath3</span><span class="p">];</span>
+<span class="n">NSSet</span> <span class="o">*</span><span class="n">cerArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nf">setWithObjects</span><span class="p">:</span><span class="n">certData</span><span class="p">,</span><span class="n">certData2</span><span class="p">,</span><span class="n">certData3</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+<span class="n">securityPolicy</span><span class="p">.</span><span class="n">pinnedCertificates</span> <span class="o">=</span> <span class="n">cerArray</span><span class="p">;</span>
+<span class="p">[</span><span class="n">httpManager</span> <span class="nf">setSecurityPolicy</span><span class="p">:</span><span class="n">securityPolicy</span><span class="p">];</span>
+</code></pre></div></div>
+:ET

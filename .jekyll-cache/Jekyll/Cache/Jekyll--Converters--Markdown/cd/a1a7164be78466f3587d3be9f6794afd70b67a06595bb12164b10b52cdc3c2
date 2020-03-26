@@ -1,0 +1,69 @@
+I"<<blockquote>
+  <p><strong>timelineLogistics</strong> 是模仿淘宝物流信息时间轴界面的自定义View</p>
+</blockquote>
+
+<h2 id="效果">效果</h2>
+
+<p><img src="http://i4.piimg.com/1949/af2a87e889d29664.png" alt="Markdown" /></p>
+
+<blockquote>
+  <p>使用正则表达式判断字符是否为电话号码，用YYLable进行富文本电话拨打</p>
+</blockquote>
+
+<h2 id="使用">使用</h2>
+
+<ul>
+  <li>
+    <p>引入Masonry,YYkit库
+ 	- 使用了MAsonry进行布局
+ 	- 使用了YYkit中的YYLable进行富文本电话号码点击拨打电话</p>
+  </li>
+  <li>初始化数组
+    <div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">NSArray</span> <span class="o">*</span><span class="n">titleArr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nf">arrayWithObjects</span><span class="p">:</span>
+               <span class="s">@"[北京通州区杨庄公司锦园服务部]快件已被27号楼e站代签收"</span><span class="p">,</span>
+               <span class="s">@"[北京通州区杨庄公司]到达目的地网店，快件将很快进行派送"</span> <span class="p">,</span>
+               <span class="s">@"[北京通州区杨庄公司]进行派件扫描；派送业务员：周志军；联系电话：13522464946"</span><span class="p">,</span>
+               <span class="s">@"[北京分拨中心]在分拨中心进行卸车扫描"</span><span class="p">,</span>
+               <span class="s">@"[浙江杭州分拨中心]在分拨中心进行称重扫描"</span><span class="p">,</span>
+               <span class="s">@"[浙江杭州下城区三里亭公司]进行揽件扫描"</span><span class="p">,</span><span class="nb">nil</span><span class="p">];</span>
+ 	<span class="n">NSArray</span> <span class="o">*</span><span class="n">timeArr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nf">arrayWithObjects</span><span class="p">:</span>
+              <span class="s">@"2017-07-04 12:59:00"</span><span class="p">,</span>
+              <span class="s">@"2017-07-03 10:59:00"</span><span class="p">,</span>
+              <span class="s">@"2017-07-03 08:22:00"</span><span class="p">,</span>
+              <span class="s">@"2017-07-03 03:34:22"</span><span class="p">,</span>
+              <span class="s">@"2017-07-02 12:59:00"</span><span class="p">,</span>
+              <span class="s">@"2017-07-02 08:10:00"</span><span class="p">,</span><span class="nb">nil</span><span class="p">];</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>转为模型</p>
+
+    <div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="n">titleArr</span><span class="p">.</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> 
+ <span class="p">{</span> 
+ 	<span class="n">OKLogisticModel</span> <span class="o">*</span> <span class="n">model</span> <span class="o">=</span> <span class="p">[[</span><span class="n">OKLogisticModel</span> <span class="nf">alloc</span><span class="p">]</span><span class="nf">init</span><span class="p">];</span>
+ 	<span class="n">model</span><span class="p">.</span><span class="n">dsc</span> <span class="o">=</span> <span class="p">[</span><span class="n">titleArr</span> <span class="nf">objectAtIndex</span><span class="p">:</span><span class="n">i</span><span class="p">];</span>
+ 	<span class="n">model</span><span class="p">.</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">timeArr</span> <span class="nf">objectAtIndex</span><span class="p">:</span><span class="n">i</span><span class="p">];</span>
+ 	<span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">dataArry</span> <span class="nf">addObject</span><span class="p">:</span><span class="n">model</span><span class="p">];</span>
+ 	<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>初始化控制器</p>
+
+    <div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">OKLogisticsView</span> <span class="o">*</span> <span class="n">logis</span> <span class="o">=</span> <span class="p">[[</span><span class="n">OKLogisticsView</span> <span class="nf">alloc</span><span class="p">]</span><span class="nf">initWithDatas</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">dataArry</span><span class="p">];</span>
+ <span class="c1">// 给headView赋值</span>
+ <span class="n">logis</span><span class="p">.</span><span class="n">wltype</span><span class="o">=</span><span class="s">@"已签收"</span><span class="p">;</span>
+ <span class="n">logis</span><span class="p">.</span><span class="n">number</span> <span class="o">=</span> <span class="s">@"3908723967437"</span><span class="p">;</span>
+ <span class="n">logis</span><span class="p">.</span><span class="n">company</span> <span class="o">=</span> <span class="s">@"韵达快运"</span><span class="p">;</span>
+ <span class="n">logis</span><span class="p">.</span><span class="n">phone</span> <span class="o">=</span> <span class="s">@"400-821-6789"</span><span class="p">;</span>
+ <span class="n">logis</span><span class="p">.</span><span class="n">imageUrl</span> <span class="o">=</span> <span class="s">@"http://pic40.nipic.com/20140420/12064170_201114370112_2.jpg"</span><span class="p">;</span>
+ <span class="n">logis</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">OKScreenWidth</span><span class="p">,</span> <span class="n">OKScreenHeight</span><span class="o">-</span><span class="mi">64</span><span class="p">);</span>
+ <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nf">addSubview</span><span class="p">:</span><span class="n">logis</span><span class="p">];</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<blockquote>
+  <p><a href="https://github.com/OrageKK/timelineLogistics">Demo下载</a>,如果对你有帮助麻烦点个Star</p>
+</blockquote>
+:ET

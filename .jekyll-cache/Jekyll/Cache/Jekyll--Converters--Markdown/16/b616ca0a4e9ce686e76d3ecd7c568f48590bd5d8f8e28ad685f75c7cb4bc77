@@ -1,0 +1,109 @@
+I"�,<blockquote>
+  <p>今天项目里出现一个问题，就是做一个列表选择，然后点击导航栏的确定按钮返回上级界面，并把选择的cell数据传递到上级界面。再使用accessoryType属性标记单元格之后会出现重用问题。</p>
+</blockquote>
+
+<h2 id="解决办法">解决办法</h2>
+<ul>
+  <li>
+    <p>把tableView的allowsMultipleSelection 属性设为了YES；</p>
+
+    <div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">_tableView</span><span class="p">.</span><span class="n">allowsMultipleSelection</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>在 didSelectRowAtIndexPath 和 didDeselectRowAtIndexPath 方法里面使用了如下方法实现了点击单元格然后用check mark 标记的方式。</p>
+  </li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView</span><span class="p">:(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">didSelectRowAtIndexPath</span><span class="p">:(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
+		
+      <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nf">cellForRowAtIndexPath</span><span class="p">:</span><span class="n">indexPath</span><span class="p">];</span>
+    	
+	  <span class="n">cell</span><span class="p">.</span><span class="n">accessoryType</span> <span class="o">=</span> <span class="n">UITableViewCellAccessoryCheckmark</span><span class="p">;</span>
+<span class="p">}</span>
+	
+<span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView</span><span class="p">:(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">didDeselectRowAtIndexPath</span><span class="p">:(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
+	<span class="p">[</span><span class="n">tableView</span> <span class="nf">cellForRowAtIndexPath</span><span class="p">:</span><span class="n">indexPath</span><span class="p">].</span><span class="n">accessoryType</span> <span class="o">=</span> <span class="n">UITableViewCellAccessoryNone</span><span class="p">;</span>
+<span class="p">}</span>	
+</code></pre></div></div>
+
+<h3 id="重点来了-两种思路">重点来了 两种思路</h3>
+
+<ul>
+  <li>记录选择的indexpath</li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code> 	<span class="c1">// 1.设一个NSMutableArray属性，元素个数跟你的_dataArray一样，初始化里面存的都是0。</span>
+ 	
+	 <span class="n">NSMutableArray</span><span class="o">*</span> <span class="n">selectionArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nf">array</span><span class="p">];</span>
+	 <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">_dataArray</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    	<span class="p">[</span><span class="n">selectionArray</span> <span class="nf">addObject</span><span class="p">:</span><span class="err">@</span><span class="p">(</span><span class="mi">0</span><span class="p">)];</span> <span class="c1">// 0 表示未选中，1 表示选中了</span>
+	 <span class="p">}</span>
+	 <span class="n">self</span><span class="p">.</span><span class="n">selectionArray</span> <span class="o">=</span> <span class="n">selectionArray</span><span class="p">;</span> 
+	 
+   <span class="c1">// 2.在 didSelectRowAtIndexPath:里</span>
+   
+	 <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">selectionArray</span> <span class="nf">replaceObjectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span> <span class="nf">withObject</span><span class="p">:</span><span class="err">@</span><span class="p">(</span><span class="mi">1</span><span class="p">)];</span>
+	
+	 <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nf">reloadData</span><span class="p">];</span>
+
+   <span class="c1">// 3.在 didDeselectRowAtIndexPath里：</span>
+   
+	 <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">selectionArray</span> <span class="nf">replaceObjectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span> <span class="nf">withObject</span><span class="p">:</span><span class="err">@</span><span class="p">(</span><span class="mi">0</span><span class="p">)];</span>
+	
+	 <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nf">reloadData</span><span class="p">];</span>
+
+   <span class="c1">// 4.在 cellForRow里：</span>
+	<span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nf">dequeueReusableCellWithIdentifier</span><span class="p">:</span><span class="n">identifier</span><span class="p">];</span>
+	<span class="n">cell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">_dataArray</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="nf">row</span><span class="p">];</span>
+	<span class="n">NSInteger</span> <span class="n">selected</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">selectionArray</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="nf">row</span><span class="p">]</span> <span class="nf">IntegerValue</span><span class="p">];</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">selected</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cell</span><span class="p">.</span><span class="n">accessoryType</span> <span class="o">=</span> <span class="n">UITableViewCellAccessoryNone</span><span class="p">;</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    	<span class="n">cell</span><span class="p">.</span><span class="n">accessoryType</span> <span class="o">=</span> <span class="n">UITableViewCellAccessoryCheckmark</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">cell</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>利用cell的selected属性</p>
+
+    <ul>
+      <li>继承UITableViewCell，在setSeleted:animated:方法里面，根据选择状态，修改accessoryType</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	 <span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setSelected</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">selected</span> <span class="nf">animated</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">animated</span> <span class="p">{</span>
+    	 <span class="p">[</span><span class="n">super</span> <span class="nf">setSelected</span><span class="p">:</span><span class="n">selected</span> <span class="nf">animated</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+		 <span class="n">self</span><span class="p">.</span><span class="n">accessoryType</span> <span class="o">=</span> <span class="n">selected</span><span class="p">?</span><span class="n">UITableViewCellAccessoryCheckmark</span><span class="p">:</span><span class="n">UITableViewCellAccessoryNone</span><span class="p">;</span>
+		 <span class="c1">// Configure the view for the selected state</span>
+	 <span class="p">}</span>
+	 
+	<span class="c1">// 在 cellForRow里：</span>
+	<span class="n">cell</span><span class="p">.</span><span class="n">accessoryType</span> <span class="o">=</span> <span class="n">cell</span><span class="p">.</span><span class="n">selected</span><span class="p">?</span><span class="n">UITableViewCellAccessoryCheckmark</span><span class="p">:</span><span class="n">UITableViewCellAccessoryNone</span><span class="p">;</span>
+	
+</code></pre></div></div>
+
+<h3 id="至此已完美解决因为复用所导致的问题">至此已完美解决因为复用所导致的问题</h3>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="c1">// 设置tableView可不可以选中</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">allowsSelection</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+
+    <span class="c1">// 允许tableview多选</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">allowsMultipleSelection</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+
+    <span class="c1">// 编辑模式下是否可以选中</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">allowsSelectionDuringEditing</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+
+    <span class="c1">// 编辑模式下是否可以多选</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">allowsMultipleSelectionDuringEditing</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+
+    <span class="c1">// 获取被选中的所有行</span>
+     <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nf">indexPathsForSelectedRows</span><span class="p">]</span>
+
+    <span class="c1">// 获取当前可见的行</span>
+     <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nf">indexPathsForVisibleRows</span><span class="p">];</span>
+</code></pre></div></div>
+:ET
