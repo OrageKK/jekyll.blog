@@ -2,7 +2,7 @@
 layout:     post
 title:      "WebViewJavascriptBridge"
 subtitle:   "Native & H5 The messaging"
-date:       2018-08-03
+date:       2018-08-05
 author:     "oragekk"
 header-img: "img/post-bg-ios-demo-testcallphone.jpg"
 catalog: true
