@@ -290,8 +290,8 @@
 
 <p>我们可以看到<code class="language-plaintext highlighter-rouge">setState</code>内部的声明</p>
 
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">setState</span><span class="o">&lt;</span><span class="nx">K</span> <span class="kd">extends</span> <span class="nx">keyof</span> <span class="nx">S</span><span class="o">&gt;</span><span class="p">(</span>
-            <span class="nx">state</span><span class="p">:</span> <span class="p">((</span><span class="nx">prevState</span><span class="p">:</span> <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">S</span><span class="o">&gt;</span><span class="p">,</span> <span class="nx">props</span><span class="p">:</span> <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">P</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">Pick</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;</span> <span class="o">|</span> <span class="nx">S</span> <span class="o">|</span> <span class="kc">null</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="nx">Pick</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;</span> <span class="o">|</span> <span class="nx">S</span> <span class="o">|</span> <span class="kc">null</span><span class="p">),</span>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">setState</span><span class="o">&lt;</span><span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="nx">S</span><span class="o">&gt;</span><span class="p">(</span>
+            <span class="nx">state</span><span class="p">:</span> <span class="p">((</span><span class="nx">prevState</span><span class="p">:</span> <span class="nb">Readonly</span><span class="o">&lt;</span><span class="nx">S</span><span class="o">&gt;</span><span class="p">,</span> <span class="nx">props</span><span class="p">:</span> <span class="nb">Readonly</span><span class="o">&lt;</span><span class="nx">P</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nb">Pick</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;</span> <span class="o">|</span> <span class="nx">S</span> <span class="o">|</span> <span class="kc">null</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="nb">Pick</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;</span> <span class="o">|</span> <span class="nx">S</span> <span class="o">|</span> <span class="kc">null</span><span class="p">),</span>
             <span class="nx">callback</span><span class="p">?:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">void</span>
         <span class="p">):</span> <span class="k">void</span><span class="p">;</span>
 </code></pre></div></div>
@@ -330,6 +330,13 @@
                         </a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/04-03-2020/nodeVersion.html" data-toggle="tooltip" data-placement="top" title="使用n命令管理node版本">
+                        Next<br>
+                        <span>使用n命令管理node版本</span>
+                        </a>
+                    </li>
                     
                 </ul>
 
@@ -460,13 +467,13 @@
                             
         				
                             
-                				<a href="/tags/#前端" title="前端" rel="3">
+                				<a href="/tags/#前端" title="前端" rel="4">
                                     前端
                                 </a>
                             
         				
                             
-                				<a href="/tags/#React Native" title="React Native" rel="3">
+                				<a href="/tags/#React Native" title="React Native" rel="4">
                                     React Native
                                 </a>
                             
@@ -634,7 +641,7 @@
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Oragekk Blog 2020 | Powered by <a href="https://www.jekyll.com.cn/">Jekyll</a>
+                    Copyright &copy; Oragekk Blog 2021 | Powered by <a href="https://www.jekyll.com.cn/">Jekyll</a>
                     <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe

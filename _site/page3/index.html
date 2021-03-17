@@ -186,6 +186,35 @@
             ">
     			
 <div class="post-preview">
+    <a href="/05-21-2017/textfiled%E9%99%90%E5%88%B6%E8%BE%93%E5%85%A5%E5%AD%97%E7%AC%A6.html">
+        <h2 class="post-title">
+            textfield限制输入字符
+        </h2>
+        
+        <h3 class="post-subtitle">
+            iOS，前端开发，杂货铺
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  记录一下限制输入字符的判断。不仅局限于中文或英文
+
+
+
+  首先在ViewDidLoad中注册通知
+
+
+[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(textFieldEditChanged:)
+	name:@"UITextFieldTextDidChangeNotification" ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by oragekk on May 21, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/04-14-2017/%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F%E4%BB%8E%E5%A4%9A%E8%AF%B4%E8%BF%81%E7%A7%BB%E5%88%B0disqus.html">
         <h2 class="post-title">
             评论系统从多说迁移到disqus指南
@@ -492,35 +521,6 @@ iOS 10.3 还未正式发布，beta 版中一个关于keychain 特性的小修改
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/12-31-2016/%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95.html">
-        <h2 class="post-title">
-            iOS - Image compression algorithm
-        </h2>
-        
-        <h3 class="post-subtitle">
-            算法，iOS开发，Demo 归纳笔记
-        </h3>
-        
-        <div class="post-content-preview">
-            
-
-  由于最近公司在做图片相册选择上传的功能，对于图片的压缩算法这里我借鉴了ochina的ios端App。其中有涉及到图片压缩的算法，这里贴出来留待后用;
-
-
-GACompressionPicHandle.h
-
-	#import &lt;Foundation/Foundation.h&gt;
-	#import &lt;UIKit/UIKit.h&gt;
-	#import &lt;CoreG...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by oragekk on December 31, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -639,13 +639,13 @@ GACompressionPicHandle.h
                             
                         
                             
-                                <a href="/tags.html#前端" title="前端" rel="3">
+                                <a href="/tags.html#前端" title="前端" rel="4">
                                     前端
                                 </a>
                             
                         
                             
-                                <a href="/tags.html#React Native" title="React Native" rel="3">
+                                <a href="/tags.html#React Native" title="React Native" rel="4">
                                     React Native
                                 </a>
                             
@@ -814,7 +814,7 @@ GACompressionPicHandle.h
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Oragekk Blog 2020 | Powered by <a href="https://www.jekyll.com.cn/">Jekyll</a>
+                    Copyright &copy; Oragekk Blog 2021 | Powered by <a href="https://www.jekyll.com.cn/">Jekyll</a>
                     <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe

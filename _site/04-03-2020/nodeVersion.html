@@ -10,7 +10,7 @@
     <meta name="keywords"  content="黄坤, Oragekk, @Oragekk, 黄坤的博客, Oragekk Blog, 博客, 个人网站, 互联网, 前端, 设计, iOS, Lynn">
     <meta name="theme-color" content="#000000">
     
-    <title>iOS - Runloop - Oragekk's Blog - 心之所向，身亦至之</title>
+    <title>使用n命令管理node版本 - Oragekk's Blog - 心之所向，身亦至之</title>
 
     <!-- Web App Manifest -->
     <link rel="manifest" href="/pwa/manifest.json">
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="/img/favicon.ico">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="http://localhost:4000/12-26-2016/iOS%E4%B8%AD%E7%9A%84Runloop.html">
+    <link rel="canonical" href="http://localhost:4000/04-03-2020/nodeVersion.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -157,13 +157,13 @@
   <!--<div id="particles-js">-->
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/post-bg-dongman.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-js-version.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('/img/post-bg-dongman.jpg')
+        background-image: url('/img/post-bg-js-version.jpg')
     }
     
 </style>
@@ -175,17 +175,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        <a class="tag" href="/tags/#前端" title="前端">前端</a>
                         
-                        <a class="tag" href="/tags/#工具集" title="工具集">工具集</a>
+                        <a class="tag" href="/tags/#React Native" title="React Native">React Native</a>
                         
                     </div>
-                    <h1>iOS - Runloop</h1>
+                    <h1>使用n命令管理node版本</h1>
                     
                     
-                    <h2 class="subheading">工具集，iOS开发，Demo 归纳笔记</h2>
+                    <h2 class="subheading">Nodejs version management</h2>
                     
-                    <span class="meta">Posted by oragekk on December 26, 2016</span>
+                    <span class="meta">Posted by oragekk on April 3, 2020</span>
                 </div>
             </div>
         </div>
@@ -207,114 +207,150 @@
                 
 
 				<blockquote>
-  <p>###摘要
-  <em>本文介绍iOS中的事件循环Runloop;</em></p>
+  <p>鉴于使用ReactNative时，会需要不同的node版本，提供一种版本切换方式</p>
 </blockquote>
 
-<p><img src="https://zero-space.s3.amazonaws.com/photos/160b464b-e6e1-4942-8856-01ae98f8c088x840.jpg" alt="" /></p>
+<h2 id="使用-n-command-来进行node版本管理">使用 n command 来进行node版本管理</h2>
 
-<h3 id="runloop-是什么">Runloop 是什么</h3>
-<ul>
-  <li> Runloop是事件接收和分发机制的一个实现。
-    <ul>
-      <li>Runloop提供了一种异步执行代码的机制，不能并行执行任务。</li>
-      <li>在主队列中，Main RunLoop直接配合任务的执行，负责处理UI事件、定时器以及其他内核相关事件。</li>
-    </ul>
-  </li>
-</ul>
+<h3 id="概念">概念</h3>
 
-<p>###Runloop的主要目的</p>
-<ul>
-  <li>保证执行程序的线程不会被终止</li>
-</ul>
+<p>n Node version manager 提供了一个更简单的 CLI，用于在 Node 版本之间进行安装和切换。它仅在Linux 或 Mac 操作系统上受到支持。</p>
 
-<p>###什么时候使用Runloop</p>
-<ul>
-  <li>
-    <p>当需要和该线程进行交互的时候才会使用Runloop</p>
-  </li>
-  <li>
-    <p>每一个线程都有其对应的RunLoop，但是默认非主线程的RunLoop是没有运行的，需要为RunLoop添加至少一个事件源，然后去run它。</p>
-  </li>
-  <li>
-    <p>一般情况下我们是没有必要去启用线程的RunLoop的，除非你在一个单独的线程中需要长久的检测某个事件。</p>
-  </li>
-  <li>
-    <h2 id="主线程-默认有runloop当自己启动一个线程如果只是用于处理单一的事件则该线程在执行完之后就退出了所以当我们需要让该线程监听某项事务时就得让线程一直不退出runloop就是这么一个循环没有事件的时候一直卡着有事件来临了执行其对应的函数">主线程 默认有Runloop。当自己启动一个线程，如果只是用于处理单一的事件，则该线程在执行完之后就退出了。所以当我们需要让该线程监听某项事务时，就得让线程一直不退出，runloop就是这么一个循环，没有事件的时候，一直卡着，有事件来临了，执行其对应的函数。</h2>
-    <blockquote>
-      <p><em>Runloop，正如其名所示，是线程进入和被线程用来响应事件以及调用事件处理函数的地方。需要在代码中使用控制语句实现run loop的循环，也就是说，需要代码提供while 或者 for循环来驱动run loop。</em></p>
-    </blockquote>
-  </li>
-</ul>
+<h3 id="安装">安装</h3>
 
-<p>在这个循环中使用一个Runloop对象<code class="language-plaintext highlighter-rouge">[NSRunloop currentRunloop]</code>执行接收消息，调用对应的处理函数。</p>
-<ul>
-  <li>
-    <p>Runloop接收两种源事件:<code class="language-plaintext highlighter-rouge">input sources</code>和<code class="language-plaintext highlighter-rouge">timer sources</code>。</p>
-  </li>
-  <li>
-    <p>input sources 传递异步事件，通常是来自其他线程和不同的程序中的消息；</p>
-  </li>
-  <li>
-    <p> timer sources(定时器) 传递同步事件（重复执行或者在特定时间上触发）。</p>
-  </li>
-  <li>
-    <p>除了处理<code class="language-plaintext highlighter-rouge">input sources</code>，Runloop 也会产生一些关于本身行为的<code class="language-plaintext highlighter-rouge">notificaiton</code>。注册成为Runloop的<code class="language-plaintext highlighter-rouge">observer</code>，可以接收到这些notification，做一些额外的处理。（使用<code class="language-plaintext highlighter-rouge">CoreFoundation</code>来成为runloop的observer）。</p>
-  </li>
-</ul>
+<p>如果你已经安装某个版本的 Node 和 npm ，则可以用 npm install -g n 来安装 n，就像安装其他 NPM 包一样。</p>
 
-<p>###Runloop特性</p>
+<p>如果你还没有安装 Node 或 npm，可以用 GitHub 中的 bash 脚本安装 n。这是它的样子：</p>
 
-<ul>
-  <li>
-    <p>当有事件发生时，Runloop会根据具体的事件类型通知应用程序作出响应；</p>
-  </li>
-  <li>
-    <p>当没有事件发生时，Runloop会进入休眠状态，从而达到省电的目的；</p>
-  </li>
-  <li>
-    <p>当事件再次发生时，Runloop会被重新唤醒，处理事件。</p>
-  </li>
-  <li>iOS 中所有的事件监听全部由运行循环负责</li>
-  <li>主线程的 RunLoop在应用启动的时候就会自动创建</li>
-  <li>其他线程则需要在该线程下自己启动</li>
-  <li>不能自己创建 RunLoop</li>
-  <li>RunLoop 并不是线程安全的，所以需要避免在其他线程上调用当前线程的 RunLoop</li>
-  <li>RunLoop 负责管理 <code class="language-plaintext highlighter-rouge">autorelease pools</code></li>
-  <li>RunLoop 负责处理消息事件，即输入源事件、计时器事件和网络请求事情</li>
-</ul>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-L</span> https://git.io/n-install | bash
+<span class="o">===</span> n successfully installed.
+  The active Node.js version is: v10.16.0
 
-<p>###应用场景</p>
-<ul>
-  <li>
-    <p>创建常驻线程，执行一些会一直存在的任务。该线程的生命周期跟 App
- 相同
-    @autoreleasepool { 
-       NSLog(@”%@”, [NSThread currentThread]); 
-       NSRunLoop *runLoop = [NSRunLoop currentRunLoop]; 
-       // 只有添加端口后，才能能够保证运行循环持续运行 
-       [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode]; 
-       [runLoop run];</p>
+  Run <span class="sb">`</span>n <span class="nt">-h</span><span class="sb">`</span> <span class="k">for </span>help.
+  To update n later, run <span class="sb">`</span>n-update<span class="sb">`</span><span class="nb">.</span>
+  To uninstall, run <span class="sb">`</span>n-uninstall<span class="sb">`</span><span class="nb">.</span>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   // 线程结束之前，不会执行至此 
-   NSLog(@"%@", [NSThread currentThread]);
-}
-</code></pre></div>    </div>
-  </li>
-  <li>维护线程的生命周期，让线程不自动退出，<code class="language-plaintext highlighter-rouge">isFinished</code>
- 为 <code class="language-plaintext highlighter-rouge">Yes</code>时退出</li>
-  <li>
-    <h2 id="在一定时间内监听某种事件或执行某种任务的线程">在一定时间内监听某种事件，或执行某种任务的线程</h2>
-    <blockquote>
-      <p>####提示：一般在开发中很少会主动创建Runloop，而通常会把事件添加到Runloop中。</p>
-    </blockquote>
-  </li>
-</ul>
+  IMPORTANT: OPEN A NEW TERMINAL TAB/WINDOW or run <span class="sb">`</span><span class="nb">.</span> /home/brian/.bashrc<span class="sb">`</span>
+             before using n and Node.js.
+<span class="o">===</span>
+~<span class="nv">$ </span><span class="nb">.</span> /home/brian/.bashrc
+~<span class="nv">$ </span>n
+node/10.16.0
+</code></pre></div></div>
 
-<p>###参考文章
-<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW23">官方文档</a> 
-<a href="http://blog.ibireme.com/2015/05/18/runloop/">深入理解Runloop</a>
-<a href="http://www.cnblogs.com/zy1987/p/4582466.html">Runloop原理和核心机制</a></p>
+<p>通过从 GitHub 下载并运行 n-install 脚本来安装 n。n 默认安装了一个版本的 Node。</p>
+
+<h3 id="安装版本10170">安装版本10.17.0</h3>
+
+<p>如果需要指定版本号，可以这样安装</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>n 10.17.0
+</code></pre></div></div>
+
+<h3 id="安装最新版本">安装最新版本</h3>
+
+<p>安装最新版本使用如下命令</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>n latest
+</code></pre></div></div>
+
+<h3 id="切换版本">切换版本</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n
+</code></pre></div></div>
+
+<p>显示如下</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Last login: Fri Apr  3 16:56:05 on ttys004
+
+<span class="c"># huangkun @ huagnkundeMacBook-Pro in ~ [16:58:24] </span>
+<span class="nv">$ </span>n
+  ο node/10.17.0
+    node/13.12.0
+
+Use up/down arrow keys to <span class="k">select </span>a version, <span class="k">return </span>key to <span class="nb">install</span>, d to delete, q to quit
+
+
+</code></pre></div></div>
+
+<p>可以使用上下方向键来选择版本，并回车。如果不想选择可以按<code class="language-plaintext highlighter-rouge">q</code>退出</p>
+
+<h2 id="直接使用node二进制文件">直接使用Node二进制文件</h2>
+
+<p>n 提供了直接调用特定 Node 二进制文件的功能，而无需显式切换到该版本的 Node。 NVM 则没有类似的功能。</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># huangkun @ huagnkundeMacBook-Pro in ~ [17:01:32] </span>
+<span class="nv">$ </span>node <span class="nt">-v</span>
+v10.17.0
+<span class="c"># huangkun @ huagnkundeMacBook-Pro in ~ [17:01:39] </span>
+<span class="nv">$ </span>n use 13.12.0 index.js
+Node version: v13.12.0
+</code></pre></div></div>
+
+<p>请注意，n use 命令所请求的 Node 版本需要由 n 安装。</p>
+
+<p>在某些情况下，这个功能非常有用。例如，有一个构建服务器，用于构建需要不同 Node 版本的程序。可以用 n use 命令触发每个构建，并能够指定该程序所需的 Node 版本。</p>
+
+<h2 id="差异化">差异化</h2>
+
+<p>NVM for Windows 和 n 有许多常见功能，也有一些独特的功能，这些功能会影响你使用每个工具的方式和位置。以下是一些主要差异的摘要：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>能力</strong></th>
+      <th style="text-align: center"><strong>NVM for Windows</strong></th>
+      <th style="text-align: center"><strong>n</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">安装</td>
+      <td style="text-align: center">Windows 安装程序或独立安装</td>
+      <td style="text-align: center">Bash 脚本或 npm包</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">操作系统支持</td>
+      <td style="text-align: center">Windows（适用于Linux/Mac的不同实现）</td>
+      <td style="text-align: center">仅限 Linux/Mac</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">列出要安装的 Node 的可用版本？</td>
+      <td style="text-align: center">Yes</td>
+      <td style="text-align: center">No</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">列出已安装的Node版本？</td>
+      <td style="text-align: center">Yes</td>
+      <td style="text-align: center">Yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">在不同的Node版本之间安装和切换？</td>
+      <td style="text-align: center">Yes</td>
+      <td style="text-align: center">Yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">直接访问Node二进制文件？</td>
+      <td style="text-align: center">No</td>
+      <td style="text-align: center">Yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">选择要安装的架构（x86，x64）？</td>
+      <td style="text-align: center">Yes</td>
+      <td style="text-align: center">Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>如果你使用Linux/Mac那么我很推荐你使用n，因为它安装方便，并且API简单。我还是用过homebrew安装两个办版本，使用<code class="language-plaintext highlighter-rouge">brew link --overwrite --force node</code>命令来更改版本，很不方便，并且容错率很低</p>
+
+<p>或者你可以在 Windows 上选择 NVM for Windows，同时在 Linux 构建服务器上选择 n</p>
+
+<p>无论怎样，这两种工具都能很好地满足能够动态切换 Node 版本的需求。</p>
+
+<blockquote>
+  <p>就是这么简单了</p>
+</blockquote>
 
 
                 <hr style="visibility: hidden;">
@@ -322,19 +358,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/12-26-2016/NSOperation%E5%92%8CNSOPerationQueue.html" data-toggle="tooltip" data-placement="top" title="iOS - NSOperatioin">
+                        <a href="/11-12-2019/react3.html" data-toggle="tooltip" data-placement="top" title="ReactNative 认知（三）">
                         Previous<br>
-                        <span>iOS - NSOperatioin</span>
+                        <span>ReactNative 认知（三）</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/12-26-2016/%E8%A1%A8%E6%A0%BC%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E4%B8%8D%E4%BD%BF%E7%94%A8cornerRadius%E8%AE%BE%E7%BD%AE%E5%9C%86%E8%A7%92.html" data-toggle="tooltip" data-placement="top" title="Do not use the cornerradius set with rounded corners">
-                        Next<br>
-                        <span>Do not use the cornerradius set with rounded corners</span>
-                        </a>
-                    </li>
                     
                 </ul>
 
@@ -536,8 +565,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "oragekk";
-    var disqus_identifier = "/12-26-2016/iOS中的Runloop";
-    var disqus_url = "http://localhost:4000/12-26-2016/iOS%E4%B8%AD%E7%9A%84Runloop.html";
+    var disqus_identifier = "/04-03-2020/nodeVersion";
+    var disqus_url = "http://localhost:4000/04-03-2020/nodeVersion.html";
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
